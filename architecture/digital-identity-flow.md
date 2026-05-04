@@ -109,7 +109,7 @@ sequenceDiagram
 
     C->>MOH: Apply for health card
     MOH->>IDP: Validate citizen token
-    IDP-->>MOH: Token valid (NIN: SY-1990-001-123456-5)
+    IDP-->>MOH: Token valid (NIN: SY-NIN-XXXX-XXXX, mock format)
     MOH->>CONSENT: Check consent: MOH access to MOI civil data?
     CONSENT-->>MOH: No prior consent — request required
     MOH->>C: Request consent: "May we verify your details with the Interior Ministry?"

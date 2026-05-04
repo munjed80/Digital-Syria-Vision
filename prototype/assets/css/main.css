@@ -109,7 +109,12 @@ h1, h2, h3, h4, h5, h6 {
   direction: rtl;
 }
 
-/* ---- Layout ---- */
+/* ---- Layout ----
+   Use CSS logical properties so RTL/LTR are handled by the browser
+   without per-page margin-right hacks. The sidebar is on the
+   inline-start side; main content gets a margin on the inline-start side
+   equal to the sidebar width.
+*/
 .app-layout {
   display: flex;
   min-height: 100vh;
@@ -117,7 +122,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .main-content {
   flex: 1;
-  margin-left: var(--sidebar-width);
+  margin-inline-start: var(--sidebar-width);
+  margin-inline-end: 0;
+  /* Legacy fallback for very old browsers; harmless in modern ones. */
+  margin-left: 0;
+  margin-right: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -167,7 +176,9 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--gradient-primary);
   min-height: 100vh;
   position: fixed;
-  left: 0;
+  /* Use CSS logical property so the sidebar sits on the inline-start side
+     in both RTL and LTR layouts. */
+  inset-inline-start: 0;
   top: 0;
   display: flex;
   flex-direction: column;
@@ -240,7 +251,9 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.875rem;
   font-weight: 500;
   transition: all var(--transition-fast);
-  border-left: 3px solid transparent;
+  /* Logical-property border so the active marker sits on the inline-start
+     side in both RTL and LTR layouts. */
+  border-inline-start: 3px solid transparent;
   cursor: pointer;
 }
 
@@ -252,7 +265,7 @@ h1, h2, h3, h4, h5, h6 {
 .nav-item.active {
   background: rgba(197,160,40,0.15);
   color: var(--color-secondary-light);
-  border-left-color: var(--color-secondary);
+  border-inline-start-color: var(--color-secondary);
 }
 
 .nav-item .nav-icon {
@@ -679,8 +692,10 @@ tr:hover td { background: var(--color-background); }
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
   .sidebar { transform: translateX(-100%); transition: transform var(--transition-normal); }
+  body.rtl .sidebar { transform: translateX(100%); }
   .sidebar.open { transform: translateX(0); }
-  .main-content { margin-left: 0; }
+  body.rtl .sidebar.open { transform: translateX(0); }
+  .main-content { margin-inline-start: 0; }
   .page-content { padding: var(--space-lg); }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
@@ -690,4 +705,118 @@ tr:hover td { background: var(--color-background); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .page-content { padding: var(--space-md); }
+}
+
+/* =============================================================
+   Shared prototype components (added in audit follow-up)
+   ============================================================= */
+
+/* ---- Arabic body baseline (replaces inline `body { font-family: ... }`
+   blocks repeated on every page). Pages using Arabic should add
+   class="ar" to the <body>, or rely on dir="rtl" on <html>. */
+html[dir="rtl"] body,
+body.ar {
+  font-family: var(--font-arabic);
+  direction: rtl;
+}
+
+/* ---- Visible focus indicator for accessibility ---- */
+:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ---- Prototype / mock-data banner ----
+   Used on every inner prototype page. Visible enough to protect
+   credibility but not intrusive. Bilingual Arabic + English. */
+.prototype-banner {
+  background: repeating-linear-gradient(
+    135deg,
+    #fff8e1,
+    #fff8e1 12px,
+    #fff3c4 12px,
+    #fff3c4 24px
+  );
+  color: #5a4500;
+  border-block-end: 2px solid #c5a028;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  line-height: 1.35;
+  position: sticky;
+  top: 0;
+  z-index: 300;
+}
+
+.prototype-banner-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: #c5a028;
+}
+
+.prototype-banner-ar {
+  font-family: var(--font-arabic);
+  font-weight: 700;
+}
+
+.prototype-banner-en {
+  font-family: var(--font-english);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.prototype-banner-sep {
+  opacity: 0.5;
+}
+
+/* On the dark cybersecurity / national-command pages we want a banner
+   that stays legible against the dark background. */
+.prototype-banner.dark {
+  background: repeating-linear-gradient(
+    135deg,
+    #2a2310,
+    #2a2310 12px,
+    #3a2f15 12px,
+    #3a2f15 24px
+  );
+  color: #ffd740;
+  border-block-end: 2px solid #c5a028;
+}
+
+.prototype-banner.dark .prototype-banner-icon {
+  fill: #ffd740;
+}
+
+/* ---- Inline SVG icon helper (replaces emoji-as-icons) ---- */
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  vertical-align: -3px;
+  display: inline-block;
+}
+
+.icon-lg { width: 24px; height: 24px; vertical-align: -5px; }
+.icon-sm { width: 14px; height: 14px; vertical-align: -2px; }
+
+/* ---- Prototype-mode badge for headers ---- */
+.proto-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: #fff8e1;
+  color: #8a6d00;
+  border: 1px solid #c5a028;
+  letter-spacing: 0.3px;
 }

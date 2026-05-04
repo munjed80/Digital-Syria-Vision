@@ -161,7 +161,7 @@ Content-Type: application/json
 
 {
   "serviceCode": "ID-RENEWAL-001",
-  "citizenNin": "SY-1990-0001-000123-5",
+  "citizenNin": "SY-NIN-8F3A-92KQ",
   "amount": 5000,
   "currency": "SYP",
   "description": "تجديد بطاقة الهوية الوطنية",

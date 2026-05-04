@@ -266,7 +266,7 @@
           type="text" 
           id="nin-input"
           class="form-control" 
-          placeholder="SY-1990-0001-000000-0"
+          placeholder="SY-NIN-XXXX-XXXX"
           aria-label="رقم الهوية الوطنية"
           autocomplete="off"
         >
@@ -285,12 +285,48 @@
       </div>
 
       <button 
+        id="step1-btn"
         class="btn btn-gold" 
         style="width:100%;justify-content:center;font-size:1rem;padding:14px;"
-        onclick="handleLogin()"
+        onclick="goToOtpStep()"
       >
-        دخول &nbsp; →
+        التالي: التحقق بكلمة مرور لمرة واحدة (OTP) &nbsp; →
       </button>
+
+      <!-- Step 2: OTP / MFA simulation -->
+      <div id="otp-step" style="display:none;margin-top:var(--space-md);">
+        <div class="form-group">
+          <label class="form-label" for="otp-input">رمز التحقق المؤقت (OTP) — محاكاة</label>
+          <input 
+            type="text" 
+            id="otp-input"
+            class="form-control" 
+            placeholder="123456"
+            aria-label="رمز التحقق المؤقت"
+            inputmode="numeric"
+            maxlength="6"
+            autocomplete="one-time-code"
+          >
+          <div style="font-size:0.7rem;color:rgba(255,255,255,0.55);margin-top:6px;line-height:1.5;">
+            في الإنتاج: يُرسل الرمز عبر تطبيق NDID أو رسالة SMS مع تحقق متعدد العوامل.<br>
+            هنا (نموذج تجريبي): أدخل أي 6 أرقام للمتابعة.
+          </div>
+        </div>
+        <button 
+          class="btn btn-gold" 
+          style="width:100%;justify-content:center;font-size:1rem;padding:14px;"
+          onclick="handleLogin()"
+        >
+          تأكيد ودخول &nbsp; →
+        </button>
+      </div>
+
+      <div style="margin-top:var(--space-md);padding:10px 12px;border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-sm);background:rgba(0,0,0,0.15);font-size:0.7rem;color:rgba(255,255,255,0.65);line-height:1.55;">
+        <strong style="color:var(--color-secondary-light);">ملاحظة بشأن المصادقة:</strong>
+        هذا نموذج تجريبي. لا تُستخدم بيانات حقيقية ولا توجد مصادقة فعلية.
+        تستخدم النسخة الإنتاجية الهوية الرقمية الوطنية (NDID) مع الدخول الموحّد (SSO)،
+        التحقق متعدد العوامل (MFA)، سجلات تدقيق غير قابلة للتعديل، وضوابط الجلسة والأجهزة.
+      </div>
 
       <div class="portal-links">
         <a href="ministry-dashboard.html" class="portal-link">
@@ -313,7 +349,7 @@
     </div>
 
     <div class="security-badge">
-      🔒 &nbsp; محمي بتشفير TLS 1.3 — بياناتك آمنة على البنية التحتية السيادية السورية
+      نموذج أولي — يتطلب TLS 1.3 على البنية السيادية في النسخة الإنتاجية
     </div>
 
     <div class="hero-stats">
@@ -340,28 +376,59 @@
   <script>
     function loginWithNDID() {
       const btn = document.querySelector('.ndid-btn');
-      btn.innerHTML = '<span class="ndid-btn-icon">⏳</span><div><div style="font-size:1rem;">جاري التحقق من الهوية...</div></div>';
+      btn.innerHTML = '<span class="ndid-btn-icon" aria-hidden="true">⏳</span><div><div style="font-size:1rem;">محاكاة التحقق من الهوية الرقمية...</div><div style="font-size:0.7rem;opacity:0.8;">نموذج تجريبي — لا يتم التحقق فعلياً</div></div>';
+      // Mock NDID flow: show OTP step rather than skipping straight to dashboard
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 1500);
+        document.getElementById('otp-step').style.display = 'block';
+        document.getElementById('step1-btn').style.display = 'none';
+        document.getElementById('otp-input').focus();
+      }, 1200);
     }
 
-    function handleLogin() {
-      const nin = document.getElementById('nin-input').value;
+    function goToOtpStep() {
+      const nin = document.getElementById('nin-input').value.trim();
       const pwd = document.getElementById('password-input').value;
-      
       if (!nin || !pwd) {
         alert('الرجاء إدخال رقم الهوية وكلمة المرور');
         return;
       }
-      
-      // MOCK: Always succeed for demo
-      window.location.href = 'dashboard.html';
+      // Validate the mock NIN shape (do not accept anything; reinforce that
+      // this is a prototype with a defined identifier format).
+      if (!/^SY-NIN-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(nin) && !confirm('تنسيق الهوية غير مطابق للنموذج التجريبي SY-NIN-XXXX-XXXX. هل تريد المتابعة على أي حال؟')) {
+        return;
+      }
+      document.getElementById('step1-btn').style.display = 'none';
+      const otpStep = document.getElementById('otp-step');
+      otpStep.style.display = 'block';
+      document.getElementById('otp-input').focus();
     }
 
-    // Allow Enter key to login
-    document.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleLogin();
+    function handleLogin() {
+      const otp = (document.getElementById('otp-input').value || '').trim();
+      if (!/^\d{6}$/.test(otp)) {
+        alert('الرجاء إدخال رمز تحقق مكون من 6 أرقام (محاكاة فقط)');
+        return;
+      }
+      // Mock-only: show a brief simulated verification step before redirect,
+      // so the demo does not appear to be a one-click bypass.
+      const btn = document.querySelector('#otp-step .btn');
+      const prev = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = 'محاكاة التحقق من رمز OTP...';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 800);
+    }
+
+    // Form-scoped Enter key, not a global page-level listener.
+    document.querySelector('.login-card').addEventListener('keypress', (e) => {
+      if (e.key !== 'Enter') return;
+      const otpVisible = document.getElementById('otp-step').style.display === 'block';
+      if (otpVisible) {
+        handleLogin();
+      } else {
+        goToOtpStep();
+      }
     });
   </script>
 </body>

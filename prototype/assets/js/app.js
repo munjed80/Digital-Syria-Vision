@@ -13,7 +13,9 @@
 const MOCK_USER = {
   name: 'محمد أحمد العلي',
   nameEn: 'Mohammed Al-Ali',
-  nin: 'SY-1990-0001-000123-5',
+  // Mock NIN format: SY-NIN-XXXX-XXXX (no birth year, no governorate, no gender)
+  // See docs/canonical-metrics-and-assumptions.md §4
+  nin: 'SY-NIN-8F3A-92KQ',
   role: 'مواطن',
   roleEn: 'Citizen',
   initials: 'م.أ',
@@ -25,7 +27,7 @@ const MOCK_USER = {
 const MOCK_MINISTRY_USER = {
   name: 'م. سارة الأحمد',
   nameEn: 'Eng. Sara Al-Ahmad',
-  nin: 'SY-1985-0001-000456-8',
+  nin: 'SY-NIN-4D7C-15PR',
   role: 'مدير الخدمات الرقمية',
   roleEn: 'Digital Services Director',
   ministry: 'وزارة الداخلية',
@@ -85,8 +87,8 @@ const MOCK_MINISTRY_STATS = {
 };
 
 const MOCK_CYBER_ALERTS = [
-  { id: 'CA-2026-089', date: '2026-05-04 03:17', level: 'critical', type: 'DDoS Attack', target: 'بوابة الخدمات الإلكترونية', source: 'IPs متعددة — مجهولة', status: 'تم التخفيف', details: '850K req/min تم حجبها بواسطة مرشح الـ DDoS' },
-  { id: 'CA-2026-088', date: '2026-05-03 14:52', level: 'high', type: 'Brute Force Attempt', target: 'نظام المصادقة NDID', source: '185.220.x.x', status: 'محجوب', details: '4,200 محاولة تسجيل دخول فاشلة في 10 دقائق — تم الحجب' },
+  { id: 'CA-2026-089', date: '2026-05-04 03:17', level: 'critical', type: 'DDoS Attack', target: 'بوابة الخدمات الإلكترونية', source: 'IPs متعددة — مجهولة', status: 'تم التخفيف', details: 'بيانات محاكاة: نحو 850 ألف طلب/دقيقة تم حجبها بمرشح DDoS — للأغراض التوضيحية فقط' },
+  { id: 'CA-2026-088', date: '2026-05-03 14:52', level: 'high', type: 'Brute Force Attempt', target: 'نظام المصادقة NDID', source: '185.220.x.x', status: 'محجوب', details: 'بيانات محاكاة: 4,200 محاولة تسجيل دخول فاشلة في 10 دقائق — تم الحجب — للأغراض التوضيحية فقط' },
   { id: 'CA-2026-087', date: '2026-05-03 09:30', level: 'medium', type: 'Phishing Campaign', target: 'موظفو الوزارات', source: 'بريد إلكتروني مزيف', status: 'قيد التحقيق', details: 'حملة تصيد تستهدف موظفي وزارة المالية — تم إخطار الوزارة' },
   { id: 'CA-2026-086', date: '2026-05-02 16:45', level: 'low', type: 'Vulnerability Scan', target: 'منافذ الشبكة الخارجية', source: 'Shodan crawler', status: 'مُراقب', details: 'فحص روتيني — لا توجد نقاط ضعف مكشوفة' },
   { id: 'CA-2026-085', date: '2026-05-01 11:20', level: 'high', type: 'Malware Detection', target: 'محطة عمل وزارة التعليم', source: 'داخلي', status: 'معالج', details: 'تم عزل الجهاز وإجراء التحليل الجنائي — تروجان مُزال' },
@@ -125,7 +127,6 @@ function getStatusBadge(status) {
     'rejected': 'badge-danger',
     'متاح': 'badge-success',
     'قريباً': 'badge-warning',
-    'مكتمل': 'badge-success',
     'محجوب': 'badge-success',
     'تم التخفيف': 'badge-success',
     'قيد التحقيق': 'badge-warning',
