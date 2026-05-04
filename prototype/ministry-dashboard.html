@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم الوزارة — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .perf-bar { background: var(--color-border); height: 8px; border-radius: 99px; overflow: hidden; margin-top: 4px; }
+    .perf-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+    .chart-placeholder { background: var(--color-background); border-radius: var(--radius-md); height: 200px; display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); font-size: 0.9rem; position: relative; overflow: hidden; }
+    .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding: 16px; position: absolute; bottom: 0; left: 0; right: 0; }
+    .bar { flex: 1; border-radius: 4px 4px 0 0; min-width: 24px; transition: height 1s ease; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right: 260px; margin-left: 0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">☰</button>
+          <div>
+            <span class="topbar-title">لوحة تحكم الوزارة</span>
+            <span class="badge badge-primary" style="margin-right:8px;">وزارة الداخلية</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-success">🔴 مباشر</span>
+          <span id="current-time" style="font-size:0.8rem;color:var(--color-text-muted);"></span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div style="background:var(--gradient-primary);border-radius:var(--radius-xl);padding:var(--space-2xl);margin-bottom:var(--space-2xl);color:white;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-md);">
+            <div>
+              <h1 style="color:white;font-size:1.5rem;margin-bottom:4px;">وزارة الداخلية — لوحة الإدارة الرقمية</h1>
+              <p style="opacity:0.7;font-size:0.85rem;">م. سارة الأحمد — مدير الخدمات الرقمية | إحصائيات مباشرة</p>
+            </div>
+            <div style="display:flex;gap:var(--space-md);">
+              <button class="btn btn-gold btn-sm">⬇️ تصدير التقرير</button>
+              <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);">⚙️ الإعدادات</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Stats -->
+        <div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+          <div class="stat-card primary">
+            <div class="stat-icon primary">📋</div>
+            <div class="stat-value" data-count="142850">0</div>
+            <div class="stat-label">إجمالي الطلبات</div>
+            <div class="stat-change up">↑ 12% هذا الشهر</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-icon gold">⏳</div>
+            <div class="stat-value" data-count="8234">0</div>
+            <div class="stat-label">قيد المعالجة</div>
+            <div class="stat-change down">↓ 5% عن الأسبوع الماضي</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-icon success">✅</div>
+            <div class="stat-value" data-count="1456">0</div>
+            <div class="stat-label">أُنجزت اليوم</div>
+            <div class="stat-change up">↑ 23% عن أمس</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-icon success">😊</div>
+            <div class="stat-value">84%</div>
+            <div class="stat-label">رضا المواطنين</div>
+            <div class="stat-change up">↑ 3% هذا الشهر</div>
+          </div>
+          <div class="stat-card primary">
+            <div class="stat-icon primary">⚡</div>
+            <div class="stat-value">2.3</div>
+            <div class="stat-label">أيام متوسط الإنجاز</div>
+            <div class="stat-change up">↓ 40% عن قبل الرقمنة</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-icon success">🌐</div>
+            <div class="stat-value">78%</div>
+            <div class="stat-label">طلبات إلكترونية</div>
+            <div class="stat-change up">↑ من 5% (2025)</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:var(--space-2xl);">
+          <!-- Service Performance -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">📊 أداء الخدمات</span>
+              <span class="badge badge-success">محدث الآن</span>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:var(--space-lg);">
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+                    <span>🪪 تجديد بطاقة الهوية</span>
+                    <span style="font-weight:700;">3,241 طلب | 94% رضا</span>
+                  </div>
+                  <div class="perf-bar"><div class="perf-fill" style="width:94%;background:var(--color-success);"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+                    <span>📘 جواز السفر</span>
+                    <span style="font-weight:700;">2,105 طلب | 88% رضا</span>
+                  </div>
+                  <div class="perf-bar"><div class="perf-fill" style="width:88%;background:var(--color-info);"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+                    <span>🚗 رخصة القيادة</span>
+                    <span style="font-weight:700;">1,654 طلب | 76% رضا</span>
+                  </div>
+                  <div class="perf-bar"><div class="perf-fill" style="width:76%;background:var(--color-warning);"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+                    <span>📜 شهادة الميلاد</span>
+                    <span style="font-weight:700;">1,234 طلب | 97% رضا</span>
+                  </div>
+                  <div class="perf-bar"><div class="perf-fill" style="width:97%;background:var(--color-success);"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Volume Chart -->
+          <div class="card">
+            <div class="card-header"><span class="card-title">📈 حجم الطلبات اليومي (7 أيام)</span></div>
+            <div class="card-body">
+              <div class="chart-placeholder" id="bar-chart-container">
+                <div class="bar-chart" id="bar-chart"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:var(--space-md);font-size:0.75rem;color:var(--color-text-muted);">
+                <span>28 أبريل</span><span>29</span><span>30</span><span>1 مايو</span><span>2</span><span>3</span><span>4</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Applications Table -->
+        <div class="card" style="margin-top:var(--space-2xl);">
+          <div class="card-header">
+            <span class="card-title">📋 آخر الطلبات المستلمة</span>
+            <div style="display:flex;gap:var(--space-sm);">
+              <input type="text" placeholder="بحث..." style="padding:6px 12px;border:1px solid var(--color-border);border-radius:var(--radius-sm);font-size:0.8rem;font-family:'Cairo',sans-serif;">
+              <button class="btn btn-primary btn-sm">تصفية</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>رقم الطلب</th>
+                    <th>اسم المواطن</th>
+                    <th>الخدمة</th>
+                    <th>تاريخ التقديم</th>
+                    <th>الحالة</th>
+                    <th>الأولوية</th>
+                    <th>إجراء</th>
+                  </tr>
+                </thead>
+                <tbody id="ministry-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('ministry');
+
+    // Mock ministry applications — MOCK DATA ONLY
+    const ministryApps = [
+      { id: 'APP-2026-143201', name: 'أحمد محمد السلمان', service: 'تجديد هوية', date: '2026-05-04', status: 'قيد المراجعة', priority: 'عادي' },
+      { id: 'APP-2026-143198', name: 'فاطمة علي الحسن', service: 'جواز سفر', date: '2026-05-04', status: 'قيد المراجعة', priority: 'عاجل' },
+      { id: 'APP-2026-143195', name: 'خالد يوسف المحمد', service: 'رخصة قيادة', date: '2026-05-04', status: 'موافق', priority: 'عادي' },
+      { id: 'APP-2026-143192', name: 'نور حسين العبدالله', service: 'شهادة ميلاد', date: '2026-05-04', status: 'مكتمل', priority: 'عادي' },
+      { id: 'APP-2026-143189', name: 'سامر رضا الأحمدي', service: 'تجديد هوية', date: '2026-05-04', status: 'بانتظار مستند', priority: 'عادي' },
+      { id: 'APP-2026-143186', name: 'ليلى عمر الرشيد', service: 'جواز سفر', date: '2026-05-03', status: 'مكتمل', priority: 'عادي' },
+    ];
+
+    function renderTable() {
+      const tbody = document.getElementById('ministry-table');
+      tbody.innerHTML = ministryApps.map(app => {
+        const statusMap = {
+          'مكتمل': 'badge-success',
+          'موافق': 'badge-info',
+          'قيد المراجعة': 'badge-info',
+          'بانتظار مستند': 'badge-warning',
+          'مرفوض': 'badge-danger'
+        };
+        const priorityMap = { 'عادي': 'badge-primary', 'عاجل': 'badge-danger' };
+        return `
+          <tr>
+            <td><code style="font-size:0.8rem;">${app.id}</code></td>
+            <td style="font-weight:600;">${app.name}</td>
+            <td>${app.service}</td>
+            <td>${app.date}</td>
+            <td><span class="badge ${statusMap[app.status] || 'badge-primary'}">${app.status}</span></td>
+            <td><span class="badge ${priorityMap[app.priority] || 'badge-primary'}">${app.priority}</span></td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="reviewApp('${app.id}')">مراجعة</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function reviewApp(id) {
+      showToast(`فتح ملف الطلب: ${id}`);
+    }
+
+    function renderBarChart() {
+      const data = [1156, 1340, 1089, 1456, 987, 1234, 1456];
+      const max = Math.max(...data);
+      const chart = document.getElementById('bar-chart');
+      const colors = ['#1a3a5c','#254d7a','#1a3a5c','#c5a028','#1a3a5c','#254d7a','#2e7d32'];
+      chart.innerHTML = data.map((v, i) => `
+        <div class="bar" style="height:${(v/max)*100}%;background:${colors[i]};flex:1;" title="${v} طلب"></div>
+      `).join('');
+    }
+
+    function updateTime() {
+      document.getElementById('current-time').textContent = new Date().toLocaleString('ar-SY');
+    }
+
+    renderTable();
+    renderBarChart();
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الخدمات الحكومية — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .service-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      transition: all var(--transition-normal);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card:hover {
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .service-card.offline { opacity: 0.6; }
+    .service-card.offline:hover { transform: none; box-shadow: none; }
+    .service-icon { font-size: 2.5rem; margin-bottom: var(--space-md); }
+    .service-name { font-size: 1rem; font-weight: 700; color: var(--color-primary); margin-bottom: 4px; }
+    .service-ministry { font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: var(--space-md); }
+    .service-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+    .service-fee { color: var(--color-text); font-weight: 600; }
+    .service-time { color: var(--color-text-muted); }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-lg); }
+    .filter-bar { display: flex; gap: var(--space-sm); flex-wrap: wrap; margin-bottom: var(--space-xl); }
+    .filter-btn { padding: 6px 16px; border-radius: var(--radius-full); border: 1.5px solid var(--color-border); background: var(--color-surface); font-size: 0.8rem; cursor: pointer; font-family: 'Cairo', sans-serif; transition: all 0.15s; }
+    .filter-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+    .search-bar { display: flex; gap: var(--space-md); margin-bottom: var(--space-lg); }
+    .search-input { flex: 1; padding: 10px 16px; border: 1.5px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.9rem; font-family: 'Cairo', sans-serif; outline: none; }
+    .search-input:focus { border-color: var(--color-primary); }
+
+    /* Modal */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+    .modal-overlay.open { display:flex; }
+    .modal { background:white; border-radius:var(--radius-xl); max-width:480px; width:90%; max-height:90vh; overflow-y:auto; }
+    .modal-header { padding:var(--space-xl) var(--space-2xl); border-bottom:1px solid var(--color-border); display:flex; justify-content:space-between; align-items:center; }
+    .modal-body { padding:var(--space-2xl); }
+    .modal-footer { padding:var(--space-lg) var(--space-2xl); border-top:1px solid var(--color-border); display:flex; gap:var(--space-md); justify-content:flex-end; }
+    .modal-close { background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--color-text-muted); }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right: 260px; margin-left: 0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">☰</button>
+          <span class="topbar-title">الخدمات الحكومية</span>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-success">🔒 NDID متصل</span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <h1 class="page-header-title">📋 الخدمات الحكومية الإلكترونية</h1>
+          <p class="page-header-sub">استعرض وتقدم بطلبات لجميع الخدمات الحكومية المتاحة إلكترونياً</p>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input type="text" class="search-input" id="search-input" placeholder="🔍 ابحث عن خدمة..." oninput="filterServices()">
+        </div>
+
+        <!-- Category Filters -->
+        <div class="filter-bar" id="filter-bar">
+          <button class="filter-btn active" data-cat="all" onclick="setFilter(this, 'all')">الكل</button>
+          <button class="filter-btn" data-cat="الهوية" onclick="setFilter(this, 'الهوية')">🪪 الهوية</button>
+          <button class="filter-btn" data-cat="السجل المدني" onclick="setFilter(this, 'السجل المدني')">📜 السجل المدني</button>
+          <button class="filter-btn" data-cat="المرور" onclick="setFilter(this, 'المرور')">🚗 المرور</button>
+          <button class="filter-btn" data-cat="الأعمال" onclick="setFilter(this, 'الأعمال')">🏢 الأعمال</button>
+          <button class="filter-btn" data-cat="المالية" onclick="setFilter(this, 'المالية')">💰 المالية</button>
+          <button class="filter-btn" data-cat="الصحة" onclick="setFilter(this, 'الصحة')">🏥 الصحة</button>
+          <button class="filter-btn" data-cat="التعليم" onclick="setFilter(this, 'التعليم')">🎓 التعليم</button>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="services-grid" id="services-grid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Service Modal -->
+  <div class="modal-overlay" id="service-modal" role="dialog" aria-modal="true">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title" style="font-size:1.1rem;color:var(--color-primary);">تفاصيل الخدمة</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal()">إغلاق</button>
+        <button class="btn btn-primary" id="modal-apply-btn">تقدم بالطلب الآن</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('citizen');
+
+    let currentFilter = 'all';
+    let currentService = null;
+
+    function renderServices() {
+      const searchVal = document.getElementById('search-input').value.toLowerCase();
+      const grid = document.getElementById('services-grid');
+      
+      const filtered = MOCK_SERVICES.filter(s => {
+        const catMatch = currentFilter === 'all' || s.category === currentFilter;
+        const searchMatch = !searchVal || s.name.includes(searchVal) || s.nameEn.toLowerCase().includes(searchVal);
+        return catMatch && searchMatch;
+      });
+
+      grid.innerHTML = filtered.map(s => `
+        <div class="service-card ${s.online ? '' : 'offline'}" onclick="${s.online ? `openModal('${s.id}')` : ''}">
+          <div class="service-icon">${s.icon}</div>
+          <div class="service-name">${s.name}</div>
+          <div class="service-ministry">وزارة ${s.ministry}</div>
+          <div style="margin-bottom:var(--space-md);">${s.online ? `<span class="badge badge-success">متاح إلكترونياً</span>` : `<span class="badge badge-warning">قريباً</span>`}</div>
+          <div class="service-meta">
+            <span class="service-fee">${s.fee === 0 ? 'مجاني' : formatCurrency(s.fee)}</span>
+            <span class="service-time">⏱ ${s.time}</span>
+          </div>
+        </div>
+      `).join('');
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--color-text-muted);">لا توجد خدمات مطابقة لبحثك</div>';
+      }
+    }
+
+    function setFilter(btn, cat) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = cat;
+      renderServices();
+    }
+
+    function filterServices() { renderServices(); }
+
+    function openModal(serviceId) {
+      const service = MOCK_SERVICES.find(s => s.id === serviceId);
+      currentService = service;
+      
+      document.getElementById('modal-title').textContent = service.name;
+      document.getElementById('modal-body').innerHTML = `
+        <div style="text-align:center;margin-bottom:var(--space-xl);">
+          <div style="font-size:4rem;">${service.icon}</div>
+          <h3 style="color:var(--color-primary);margin-top:8px;">${service.name}</h3>
+          <p style="color:var(--color-text-muted);font-size:0.9rem;">${service.nameEn}</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);margin-bottom:var(--space-xl);">
+          <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+            <div style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:4px;">الرسوم</div>
+            <div style="font-weight:700;color:var(--color-primary);">${service.fee === 0 ? 'مجاني' : formatCurrency(service.fee)}</div>
+          </div>
+          <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+            <div style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:4px;">وقت الإنجاز</div>
+            <div style="font-weight:700;color:var(--color-primary);">${service.time}</div>
+          </div>
+          <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+            <div style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:4px;">الجهة المعنية</div>
+            <div style="font-weight:700;color:var(--color-primary);">وزارة ${service.ministry}</div>
+          </div>
+          <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+            <div style="font-size:0.75rem;color:var(--color-text-muted);margin-bottom:4px;">رمز الخدمة</div>
+            <div style="font-weight:700;color:var(--color-primary);font-family:monospace;">${service.id}</div>
+          </div>
+        </div>
+        <div class="alert alert-info" style="font-size:0.85rem;">
+          💡 سيتم تعبئة بياناتك الشخصية تلقائياً من سجل الهوية الرقمية الوطنية (NDID).
+        </div>
+      `;
+
+      document.getElementById('modal-apply-btn').onclick = () => applyForService(service);
+      document.getElementById('service-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('service-modal').classList.remove('open');
+    }
+
+    function applyForService(service) {
+      closeModal();
+      showToast(`تم إنشاء طلبك لـ "${service.name}" بنجاح! رقم الطلب: APP-2026-00${Math.floor(Math.random()*9999)}`);
+      setTimeout(() => { window.location.href = 'tracking.html'; }, 2000);
+    }
+
+    // Toast style injection
+    const toastStyle = document.createElement('style');
+    toastStyle.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
+    document.head.appendChild(toastStyle);
+
+    renderServices();
+
+    // Close modal on overlay click
+    document.getElementById('service-modal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+  </script>
+</body>
+</html>

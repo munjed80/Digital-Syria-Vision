@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المواطن — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>body { font-family: 'Cairo', sans-serif; direction: rtl; }</style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right: 260px; margin-left: 0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">☰</button>
+          <span class="topbar-title">لوحة تحكم المواطن</span>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-success">🔒 NDID متصل</span>
+          <span style="font-size:0.85rem;color:var(--color-text-muted);" id="current-time"></span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Welcome Banner -->
+        <div style="background:var(--gradient-primary);border-radius:var(--radius-xl);padding:var(--space-2xl);margin-bottom:var(--space-2xl);color:white;position:relative;overflow:hidden;">
+          <div style="position:absolute;left:-20px;top:-20px;font-size:120px;opacity:0.06;">🏛️</div>
+          <div style="position:relative;">
+            <div style="font-size:0.85rem;opacity:0.7;margin-bottom:var(--space-sm);">مرحباً بك في بوابة المواطن الرقمية</div>
+            <h1 style="color:white;font-size:1.8rem;margin-bottom:var(--space-xs);">أهلاً، محمد أحمد العلي</h1>
+            <p style="opacity:0.8;font-size:0.9rem;">رقم الهوية الوطنية: SY-1990-0001-000123-5</p>
+            <div style="margin-top:var(--space-lg);display:flex;gap:var(--space-md);flex-wrap:wrap;">
+              <span style="background:rgba(197,160,40,0.2);border:1px solid rgba(197,160,40,0.4);color:#d4b445;padding:4px 12px;border-radius:99px;font-size:0.8rem;">🪪 هوية رقمية فعالة</span>
+              <span style="background:rgba(56,142,60,0.2);border:1px solid rgba(56,142,60,0.4);color:#a5d6a7;padding:4px 12px;border-radius:99px;font-size:0.8rem;">✅ محقق البيانات</span>
+              <span style="background:rgba(21,101,192,0.2);border:1px solid rgba(21,101,192,0.4);color:#90caf9;padding:4px 12px;border-radius:99px;font-size:0.8rem;">📍 دمشق</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card primary">
+            <div class="stat-icon primary">��</div>
+            <div class="stat-value" data-count="4">4</div>
+            <div class="stat-label">طلبات مقدمة</div>
+            <div class="stat-change up">↑ 2 هذا الشهر</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-icon success">✅</div>
+            <div class="stat-value" data-count="2">2</div>
+            <div class="stat-label">طلبات مكتملة</div>
+            <div class="stat-change up">↑ 1 هذا الشهر</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-icon gold">⏳</div>
+            <div class="stat-value" data-count="1">1</div>
+            <div class="stat-label">قيد المراجعة</div>
+            <div class="stat-change">0 مستجد</div>
+          </div>
+          <div class="stat-card danger">
+            <div class="stat-icon danger">⚠️</div>
+            <div class="stat-value" data-count="1">1</div>
+            <div class="stat-label">يحتاج اهتمامك</div>
+            <div class="stat-change down">مستندات مفقودة</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Recent Applications -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">📋 أحدث الطلبات</span>
+              <a href="tracking.html" class="btn btn-outline btn-sm">عرض الكل</a>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="timeline" style="padding:var(--space-xl);padding-right:var(--space-3xl);">
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-date">28 أبريل 2026</div>
+                    <strong>تجديد بطاقة الهوية الوطنية</strong>
+                    <div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center;">
+                      <span style="font-size:0.8rem;color:var(--color-text-muted);">APP-2026-001234</span>
+                      <span class="badge badge-info">قيد المراجعة</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot success"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-date">20 أبريل 2026</div>
+                    <strong>شهادة الميلاد</strong>
+                    <div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center;">
+                      <span style="font-size:0.8rem;color:var(--color-text-muted);">APP-2026-001189</span>
+                      <span class="badge badge-success">مكتمل</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot warning"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-date">15 أبريل 2026</div>
+                    <strong>تصديق الشهادة الدراسية</strong>
+                    <div style="margin-top:4px;display:flex;justify-content:space-between;align-items:center;">
+                      <span style="font-size:0.8rem;color:var(--color-text-muted);">APP-2026-001156</span>
+                      <span class="badge badge-warning">بانتظار المستندات</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Services -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">⚡ خدمات سريعة</span>
+              <a href="services.html" class="btn btn-outline btn-sm">كل الخدمات</a>
+            </div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+                <a href="services.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);text-align:center;text-decoration:none;color:var(--color-text);border:1px solid var(--color-border);transition:all 0.2s;" onmouseover="this.style.background='var(--color-info-light)'" onmouseout="this.style.background='var(--color-background)'">
+                  <span style="font-size:2rem;">🪪</span>
+                  <span style="font-size:0.8rem;font-weight:600;">تجديد الهوية</span>
+                </a>
+                <a href="services.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);text-align:center;text-decoration:none;color:var(--color-text);border:1px solid var(--color-border);transition:all 0.2s;" onmouseover="this.style.background='var(--color-info-light)'" onmouseout="this.style.background='var(--color-background)'">
+                  <span style="font-size:2rem;">📘</span>
+                  <span style="font-size:0.8rem;font-weight:600;">جواز السفر</span>
+                </a>
+                <a href="services.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);text-align:center;text-decoration:none;color:var(--color-text);border:1px solid var(--color-border);transition:all 0.2s;" onmouseover="this.style.background='var(--color-info-light)'" onmouseout="this.style.background='var(--color-background)'">
+                  <span style="font-size:2rem;">🏥</span>
+                  <span style="font-size:0.8rem;font-weight:600;">بطاقة صحية</span>
+                </a>
+                <a href="payment.html" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);text-align:center;text-decoration:none;color:var(--color-text);border:1px solid var(--color-border);transition:all 0.2s;" onmouseover="this.style.background='var(--color-info-light)'" onmouseout="this.style.background='var(--color-background)'">
+                  <span style="font-size:2rem;">💳</span>
+                  <span style="font-size:0.8rem;font-weight:600;">دفع مستحقات</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Important Notice -->
+        <div class="alert alert-warning" style="margin-top:var(--space-xl);">
+          <span style="font-size:1.2rem;">⚠️</span>
+          <div>
+            <strong>مستندات ناقصة في الطلب APP-2026-001156</strong>
+            <div style="margin-top:4px;font-size:0.85rem;">يرجى رفع صورة الشهادة الأصلية لاستكمال طلب تصديق الشهادة الدراسية. الموعد النهائي: 15 مايو 2026.</div>
+            <a href="tracking.html" style="display:inline-block;margin-top:8px;font-weight:700;color:var(--color-warning);">رفع المستندات الآن ←</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('citizen');
+    
+    // Fix sidebar direction for RTL
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      sidebar.style.right = '0';
+      sidebar.style.left = 'auto';
+    }
+
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('current-time').textContent = now.toLocaleString('ar-SY');
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

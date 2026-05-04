@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="رؤية سوريا الرقمية — البرنامج الوطني للتحول الرقمي والسيادة الرقمية">
+  <title>رؤية سوريا الرقمية | Digital Syria Vision</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* Design Tokens */
+    :root {
+      --navy: #1a3a5c;
+      --navy-dark: #0f2540;
+      --gold: #c5a028;
+      --gold-light: #d4b445;
+      --green: #2e7d32;
+      --bg: #f5f7fa;
+      --white: #ffffff;
+      --text: #1a1a2e;
+      --muted: #718096;
+      --border: #e2e8f0;
+      --font: 'Cairo', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); color: var(--text); background: var(--bg); direction: rtl; -webkit-font-smoothing: antialiased; }
+    
+    /* Navigation */
+    nav {
+      background: rgba(15,37,64,0.97);
+      backdrop-filter: blur(20px);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0 48px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .nav-logo-text { color: white; }
+    .nav-logo-title { font-size: 1rem; font-weight: 800; line-height: 1.2; }
+    .nav-logo-sub { font-size: 0.7rem; opacity: 0.6; }
+
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--gold-light); }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy) !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 700 !important;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a1628 0%, #1a3a5c 50%, #0f2e4a 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(197,160,40,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 20% 80%, rgba(46,125,50,0.06) 0%, transparent 50%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(197,160,40,0.15);
+      border: 1px solid rgba(197,160,40,0.3);
+      color: var(--gold-light);
+      padding: 6px 18px;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+
+    .hero-title {
+      font-size: 4rem;
+      font-weight: 900;
+      color: white;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .hero-title span { color: var(--gold-light); }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 48px;
+      line-height: 1.7;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 80px;
+    }
+
+    .btn-hero-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      padding: 16px 36px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1rem;
+      transition: all 0.2s;
+      box-shadow: 0 8px 24px rgba(197,160,40,0.3);
+    }
+
+    .btn-hero-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(197,160,40,0.4); }
+
+    .btn-hero-outline {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      padding: 16px 36px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-hero-outline:hover { background: rgba(255,255,255,0.15); }
+
+    .hero-stats {
+      display: flex;
+      gap: 64px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat { text-align: center; color: rgba(255,255,255,0.8); }
+    .hero-stat-val { font-size: 2.5rem; font-weight: 900; color: var(--gold-light); display: block; }
+    .hero-stat-label { font-size: 0.8rem; opacity: 0.6; margin-top: 4px; }
+
+    /* Sections */
+    section { padding: 100px 48px; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .section-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(26,58,92,0.08); color: var(--navy); padding: 6px 16px; border-radius: 99px; font-size: 0.8rem; font-weight: 700; margin-bottom: 20px; }
+    .section-title { font-size: 2.5rem; font-weight: 800; color: var(--navy); margin-bottom: 16px; line-height: 1.2; }
+    .section-sub { font-size: 1.05rem; color: var(--muted); max-width: 600px; line-height: 1.7; }
+    .text-center { text-align: center; }
+    .text-center .section-sub { margin: 0 auto; }
+
+    /* Problem Section */
+    .problem-section { background: #0f2540; }
+    .problem-section .section-title { color: white; }
+    .problem-section .section-sub { color: rgba(255,255,255,0.6); }
+    .problem-section .section-badge { background: rgba(197,160,40,0.15); color: var(--gold-light); }
+
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .problem-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .problem-icon { font-size: 2rem; margin-bottom: 16px; }
+    .problem-title { font-size: 1.05rem; font-weight: 700; color: white; margin-bottom: 8px; }
+    .problem-desc { font-size: 0.875rem; color: rgba(255,255,255,0.55); line-height: 1.7; }
+
+    /* Pillars */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .pillar-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pillar-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+
+    .pillar-card:nth-child(1)::before { background: linear-gradient(90deg, var(--navy), var(--navy)); }
+    .pillar-card:nth-child(2)::before { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+    .pillar-card:nth-child(3)::before { background: linear-gradient(90deg, var(--green), #43a047); }
+    .pillar-card:nth-child(4)::before { background: linear-gradient(90deg, #c62828, #e53935); }
+    .pillar-card:nth-child(5)::before { background: linear-gradient(90deg, #6a1b9a, #8e24aa); }
+
+    .pillar-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.1); transform: translateY(-4px); }
+
+    .pillar-num { width: 36px; height: 36px; background: var(--navy); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; margin: 0 auto 16px; }
+    .pillar-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .pillar-title { font-size: 1rem; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .pillar-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    /* Roadmap */
+    .roadmap-section { background: linear-gradient(180deg, #f5f7fa 0%, #edf2f7 100%); }
+
+    .phases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .phase-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .phase-header {
+      padding: 28px;
+      color: white;
+    }
+
+    .phase-card:nth-child(1) .phase-header { background: var(--navy); }
+    .phase-card:nth-child(2) .phase-header { background: var(--gold); }
+    .phase-card:nth-child(3) .phase-header { background: var(--green); }
+    .phase-card:nth-child(2) .phase-header { color: var(--navy); }
+
+    .phase-num { font-size: 0.75rem; font-weight: 700; opacity: 0.7; letter-spacing: 1px; text-transform: uppercase; }
+    .phase-name { font-size: 1.4rem; font-weight: 800; margin: 8px 0 4px; }
+    .phase-period { font-size: 0.85rem; opacity: 0.8; }
+
+    .phase-body { padding: 28px; }
+    .phase-milestone { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; font-size: 0.875rem; }
+    .phase-milestone::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    /* Architecture */
+    .arch-diagram {
+      background: #0f2540;
+      border-radius: 16px;
+      padding: 48px;
+      margin-top: 56px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #a0d4ff;
+      font-size: 0.8rem;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+
+    /* KPIs */
+    .kpis-section { background: var(--navy); }
+    .kpis-section .section-title { color: white; }
+    .kpis-section .section-badge { background: rgba(197,160,40,0.15); color: var(--gold-light); }
+
+    .kpis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .kpi-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .kpi-value { font-size: 2.5rem; font-weight: 900; color: var(--gold-light); margin-bottom: 8px; }
+    .kpi-label { font-size: 0.85rem; color: rgba(255,255,255,0.6); line-height: 1.4; }
+
+    /* CTA */
+    .cta-section {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      text-align: center;
+      padding: 80px 48px;
+    }
+
+    .cta-section .section-title { color: var(--navy); }
+    .cta-section p { color: rgba(26,58,92,0.7); margin-bottom: 40px; font-size: 1.05rem; }
+
+    .btn-cta {
+      background: var(--navy);
+      color: white;
+      padding: 16px 40px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1rem;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+
+    .btn-cta:hover { background: var(--navy-dark); transform: translateY(-2px); }
+
+    /* Footer */
+    footer {
+      background: #0a0e1a;
+      color: rgba(255,255,255,0.5);
+      padding: 40px 48px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    footer strong { color: rgba(255,255,255,0.8); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-title { font-size: 2.5rem; }
+      section { padding: 60px 24px; }
+      .phases-grid { grid-template-columns: 1fr; }
+      .hero-stats { gap: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav role="navigation" aria-label="التنقل الرئيسي">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">🇸🇾</div>
+    <div class="nav-logo-text">
+      <div class="nav-logo-title">Digital Syria Vision</div>
+      <div class="nav-logo-sub">رؤية سوريا الرقمية</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#vision">الرؤية</a>
+    <a href="#problem">التحديات</a>
+    <a href="#pillars">الأعمدة</a>
+    <a href="#roadmap">خارطة الطريق</a>
+    <a href="#kpis">المؤشرات</a>
+    <a href="../prototype/index.html" class="nav-cta">النموذج التجريبي ←</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="hero" aria-label="القسم الرئيسي">
+  <div class="hero-content">
+    <div class="hero-badge">🇸🇾 البرنامج الوطني للتحول الرقمي 2026–2030</div>
+    <h1 class="hero-title">
+      رؤية سوريا<br>
+      <span>الرقمية</span>
+    </h1>
+    <p class="hero-subtitle">
+      برنامج وطني شامل لبناء حكومة رقمية ذات سيادة — تُقدم خدماتها لكل مواطن سوري<br>بشفافية وكفاءة وكرامة، من أي مكان وفي أي وقت.
+    </p>
+    <div class="hero-buttons">
+      <a href="#pillars" class="btn-hero-primary">اكتشف الرؤية</a>
+      <a href="../prototype/index.html" class="btn-hero-outline">🖥️ النموذج التجريبي</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-val">95%</span>
+        <span class="hero-stat-label">مستهدف بالهوية الرقمية</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">100%</span>
+        <span class="hero-stat-label">خدمات حكومية إلكترونية</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">$470M</span>
+        <span class="hero-stat-label">استثمار 5 سنوات</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-val">2030</span>
+        <span class="hero-stat-label">سنة الاستكمال</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Vision -->
+<section id="vision" aria-labelledby="vision-title">
+  <div class="container text-center">
+    <div class="section-badge">🎯 رؤيتنا</div>
+    <h2 class="section-title" id="vision-title">لماذا التحول الرقمي الآن؟</h2>
+    <p class="section-sub">
+      مرحلة إعادة الإعمار تمنح سوريا فرصة تاريخية لبناء بنية تحتية رقمية حكومية من الصفر — متجاوزةً عقوداً من الموروث التقني. فرصة لا تتكرر.
+    </p>
+    <div style="margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:32px;" role="list">
+      <div style="text-align:center;padding:32px;background:white;border-radius:16px;border:1px solid var(--border);" role="listitem">
+        <div style="font-size:3rem;margin-bottom:16px;">🌐</div>
+        <h3 style="color:var(--navy);margin-bottom:8px;">سيادة رقمية حقيقية</h3>
+        <p style="color:var(--muted);font-size:0.875rem;line-height:1.7;">بيانات المواطنين على أراضٍ سورية، محكومة بالقانون السوري، وخاضعة لرقابة حكومية كاملة.</p>
+      </div>
+      <div style="text-align:center;padding:32px;background:white;border-radius:16px;border:1px solid var(--border);" role="listitem">
+        <div style="font-size:3rem;margin-bottom:16px;">🚀</div>
+        <h3 style="color:var(--navy);margin-bottom:8px;">قفزة نوعية</h3>
+        <p style="color:var(--muted);font-size:0.875rem;line-height:1.7;">تخطي عقود من الأنظمة البيروقراطية القديمة بتبني حلول سحابية حديثة قائمة على المعايير المفتوحة.</p>
+      </div>
+      <div style="text-align:center;padding:32px;background:white;border-radius:16px;border:1px solid var(--border);" role="listitem">
+        <div style="font-size:3rem;margin-bottom:16px;">🤝</div>
+        <h3 style="color:var(--navy);margin-bottom:8px;">استعادة الثقة</h3>
+        <p style="color:var(--muted);font-size:0.875rem;line-height:1.7;">حكومة شفافة وقابلة للمحاسبة — كل معاملة موثقة، كل قرار قابل للتتبع.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem -->
+<section id="problem" class="problem-section" aria-labelledby="problem-title">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:0;">
+      <div class="section-badge">⚠️ التحديات الراهنة</div>
+      <h2 class="section-title" id="problem-title">الوضع الحالي الذي يجب تغييره</h2>
+      <p class="section-sub" style="margin:0 auto;">ست تحديات جوهرية تعرقل الخدمة الحكومية وتُثقل كاهل المواطن السوري يومياً.</p>
+    </div>
+    <div class="problems-grid" role="list">
+      <div class="problem-card" role="listitem">
+        <div class="problem-icon">📝</div>
+        <div class="problem-title">خدمات ورقية بالكامل</div>
+        <div class="problem-desc">أقل من 5% من الخدمات الحكومية متاحة إلكترونياً. المواطن يقف في طوابير لساعات لإنجاز معاملة يمكن إنجازها في دقائق.</div>
+      </div>
+      <div class="problem-card" role="listitem">
+        <div class="problem-icon">🪪</div>
+        <div class="problem-title">غياب الهوية الرقمية</div>
+        <div class="problem-desc">لا توجد هوية رقمية موحدة. لا يمكن التحقق من هوية المواطن إلكترونياً، مما يُعيق أي خدمة رقمية حقيقية.</div>
+      </div>
+      <div class="problem-card" role="listitem">
+        <div class="problem-icon">🏛️</div>
+        <div class="problem-title">عزلة الوزارات</div>
+        <div class="problem-desc">كل وزارة جزيرة بمعلوماتها. المواطن يملأ نفس البيانات عشرات المرات لدى جهات مختلفة.</div>
+      </div>
+      <div class="problem-card" role="listitem">
+        <div class="problem-icon">☁️</div>
+        <div class="problem-title">لا سحابة حكومية سيادية</div>
+        <div class="problem-desc">بيانات الحكومة مبعثرة وغير محمية. لا بنية تحتية موثوقة للاستضافة الحكومية الآمنة.</div>
+      </div>
+      <div class="problem-card" role="listitem">
+        <div class="problem-icon">🛡️</div>
+        <div class="problem-title">هشاشة أمنية سيبرانية</div>
+        <div class="problem-desc">لا يوجد CERT وطني، لا مراقبة أمنية منتظمة، والأنظمة مكشوفة لتهديدات لا تُرصد.</div>
+      </div>
+      <div class="problem-card" role="listitem">
+        <div class="problem-icon">💰</div>
+        <div class="problem-title">اقتصاد نقدي معزول</div>
+        <div class="problem-desc">معظم رسوم الخدمات تُدفع نقداً. لا بوابة دفع حكومية موحدة، مما يعزز الفساد ويُقصي الفئات المهمشة.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pillars -->
+<section id="pillars" aria-labelledby="pillars-title">
+  <div class="container text-center">
+    <div class="section-badge">🏛️ الحل</div>
+    <h2 class="section-title" id="pillars-title">الأعمدة الخمسة لرؤية سوريا الرقمية</h2>
+    <p class="section-sub">نهج شامل ومتكامل يبني الحكومة الرقمية السورية على خمسة أعمدة راسخة.</p>
+    <div class="pillars-grid" role="list">
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-num">1</div>
+        <div class="pillar-icon">🪪</div>
+        <div class="pillar-title">الهوية الرقمية الوطنية</div>
+        <div class="pillar-desc">هوية رقمية آمنة لكل مواطن سوري. بطاقة ذكية ومحفظة رقمية على التطبيق الرسمي.</div>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-num">2</div>
+        <div class="pillar-icon">☁️</div>
+        <div class="pillar-title">السحابة الحكومية السيادية</div>
+        <div class="pillar-desc">بنية تحتية سحابية سيادية بمراكز بيانات على الأراضي السورية وفق أعلى معايير الأمان.</div>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-num">3</div>
+        <div class="pillar-icon">🔌</div>
+        <div class="pillar-title">التشغيل البيني لبوابة API</div>
+        <div class="pillar-desc">بوابة API وطنية تربط كل الوزارات. تبادل البيانات آمن وموافق للمعايير الدولية.</div>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-num">4</div>
+        <div class="pillar-icon">🛡️</div>
+        <div class="pillar-title">الأمن السيبراني و SY-CERT</div>
+        <div class="pillar-desc">فريق الاستجابة للطوارئ السيبرانية الوطني يعمل 24/7 لحماية البنية التحتية الحكومية.</div>
+      </div>
+      <div class="pillar-card" role="listitem">
+        <div class="pillar-num">5</div>
+        <div class="pillar-icon">💳</div>
+        <div class="pillar-title">بوابة الدفع الحكومي</div>
+        <div class="pillar-desc">ادفع أي رسوم حكومية إلكترونياً بأمان. بطاقة، تحويل بنكي، محفظة رقمية، أو كاش عند الوكلاء.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Roadmap -->
+<section id="roadmap" class="roadmap-section" aria-labelledby="roadmap-title">
+  <div class="container text-center">
+    <div class="section-badge">🗺️ خارطة الطريق</div>
+    <h2 class="section-title" id="roadmap-title">من الآن حتى 2030 — ثلاث مراحل واضحة</h2>
+    <p class="section-sub">خطة تنفيذية مرحلية توازن بين السرعة والاستدامة.</p>
+    <div class="phases-grid" role="list">
+      <div class="phase-card" role="listitem">
+        <div class="phase-header">
+          <div class="phase-num">المرحلة 1</div>
+          <div class="phase-name">البناء والتأسيس</div>
+          <div class="phase-period">2026 — منتصف 2027 | $120M</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-milestone">إنشاء الهيئة الوطنية للحكومة الرقمية (DGA)</div>
+          <div class="phase-milestone">سنّ التشريعات الرقمية الأساسية</div>
+          <div class="phase-milestone">إطلاق SyriaGovCloud (المرحلة الأولى)</div>
+          <div class="phase-milestone">20 خدمة حكومية إلكترونية مباشرة</div>
+          <div class="phase-milestone">تجريب NDID على 100,000 مواطن</div>
+          <div class="phase-milestone">تأسيس SY-CERT</div>
+        </div>
+      </div>
+      <div class="phase-card" role="listitem">
+        <div class="phase-header">
+          <div class="phase-num">المرحلة 2</div>
+          <div class="phase-name">التوسع والانتشار</div>
+          <div class="phase-period">2027 — 2028 | $200M</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-milestone">NDID لـ 5 مليون مواطن</div>
+          <div class="phase-milestone">60% من الوزارات على GovCloud</div>
+          <div class="phase-milestone">100+ خدمة حكومية إلكترونية</div>
+          <div class="phase-milestone">إطلاق بوابة الدفع الحكومي</div>
+          <div class="phase-milestone">مركز العمليات الأمنية الحكومي</div>
+          <div class="phase-milestone">تغطية 50+ مدينة ومنطقة</div>
+        </div>
+      </div>
+      <div class="phase-card" role="listitem">
+        <div class="phase-header">
+          <div class="phase-num">المرحلة 3</div>
+          <div class="phase-name">التحسين والريادة</div>
+          <div class="phase-period">2029 — 2030 | $150M</div>
+        </div>
+        <div class="phase-body">
+          <div class="phase-milestone">تغطية NDID تتجاوز 90%</div>
+          <div class="phase-milestone">100% من الأنظمة على GovCloud</div>
+          <div class="phase-milestone">خدمات مدعومة بالذكاء الاصطناعي</div>
+          <div class="phase-milestone">اقتصاد البيانات المفتوحة</div>
+          <div class="phase-milestone">اتفاقيات تعاون رقمي إقليمية</div>
+          <div class="phase-milestone">Top 70 تصنيف الأمم المتحدة للحكومة الرقمية</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section aria-labelledby="arch-title">
+  <div class="container">
+    <div class="section-badge">⚙️ الهيكل التقني</div>
+    <h2 class="section-title" id="arch-title">معمارية النظام الوطني</h2>
+    <p class="section-sub">هيكل تقني متكامل يضع المواطن في المركز ويربط كل الجهات الحكومية.</p>
+    <div class="arch-diagram" role="img" aria-label="مخطط معمارية النظام">
+┌─────────────────────────────────────────────────────────────────────┐
+│                    المواطنون والشركاء الدوليون                       │
+│              بوابة الويب │ تطبيق سوريا Gov │ أكشاك │ SMS/USSD        │
+└──────────────────────────────────┬──────────────────────────────────┘
+                                   │
+                  ┌────────────────▼────────────────┐
+                  │     طبقة الأمان والحماية          │
+                  │    DDoS  │  WAF  │  CDN          │
+                  └────────────────┬────────────────┘
+                                   │
+                  ┌────────────────▼────────────────┐
+                  │       بوابة API الوطنية           │
+                  │  مصادقة │ تفويض │ تحديد معدل     │
+                  │  NDID │ OAuth 2.1 │ OpenID Connect│
+                  └──────┬──────────┬────────┬──────┘
+                         │          │        │
+              ┌──────────▼─┐  ┌─────▼──┐  ┌─▼────────────┐
+              │ وزارة       │  │ وزارة   │  │ وزارات أخرى  │
+              │ الداخلية   │  │ الصحة   │  │ (+25)        │
+              └──────────┬─┘  └─────┬──┘  └─┬────────────┘
+                         │          │        │
+              ┌──────────▼──────────▼────────▼────────────┐
+              │         سجل المواطنين الرئيسي              │
+              │    سجل الأعمال │ سجل العقارات             │
+              └───────────────────────────────────────────┘
+                         │
+              ┌──────────▼───────────────────────────────┐
+              │          SyriaGovCloud                    │
+              │   دمشق (أساسي) │ حلب (احتياطي)           │
+              │   99.9% وقت تشغيل │ تشفير كامل           │
+              └───────────────────────────────────────────┘
+    </div>
+  </div>
+</section>
+
+<!-- KPIs -->
+<section id="kpis" class="kpis-section" aria-labelledby="kpis-title">
+  <div class="container text-center">
+    <div class="section-badge">📊 المؤشرات المستهدفة 2030</div>
+    <h2 class="section-title" id="kpis-title">أرقام تعكس طموحنا</h2>
+    <div class="kpis-grid" role="list">
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">95%</div>
+        <div class="kpi-label">البالغون الحاصلون على NDID</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">100%</div>
+        <div class="kpi-label">الخدمات الحكومية متاحة إلكترونياً</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">80%</div>
+        <div class="kpi-label">تخفيض وقت إنجاز الخدمة</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">90%</div>
+        <div class="kpi-label">النماذج الورقية المُلغاة</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">85%</div>
+        <div class="kpi-label">رضا المواطنين المستهدف</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">#1</div>
+        <div class="kpi-label">هدف التصنيف العربي للحكومة الرقمية</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">&lt;4h</div>
+        <div class="kpi-label">زمن استجابة SY-CERT لحوادث P1</div>
+      </div>
+      <div class="kpi-card" role="listitem">
+        <div class="kpi-value">$1.5B</div>
+        <div class="kpi-label">العوائد التراكمية المتوقعة (5 سنوات)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" aria-labelledby="cta-title">
+  <div class="container">
+    <h2 class="section-title" id="cta-title">الوقت الأنسب لبناء سوريا الرقمية هو الآن</h2>
+    <p>استعرض النموذج التجريبي التفاعلي لبوابة المواطن ومراكز القيادة الوطنية</p>
+    <a href="../prototype/index.html" class="btn-cta">ابدأ التجربة التفاعلية ←</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer role="contentinfo">
+  <div style="margin-bottom:16px;">
+    <strong>رؤية سوريا الرقمية</strong> — البرنامج الوطني للتحول الرقمي والسيادة الرقمية
+  </div>
+  <div style="font-size:0.8rem;">
+    هذا المشروع مقترح لأغراض التخطيط الاستراتيجي. جميع البيانات الواردة تجريبية فقط.<br>
+    Digital Syria Vision — National Digital Transformation Program | 2026
+  </div>
+  <div style="margin-top:16px;display:flex;justify-content:center;gap:32px;font-size:0.8rem;">
+    <a href="../docs/executive-summary.md" style="color:rgba(255,255,255,0.4);text-decoration:none;">الوثائق الاستراتيجية</a>
+    <a href="../architecture/national-digital-architecture.md" style="color:rgba(255,255,255,0.4);text-decoration:none;">المخططات التقنية</a>
+    <a href="../presentation/executive-presentation.md" style="color:rgba(255,255,255,0.4);text-decoration:none;">العرض التنفيذي</a>
+  </div>
+</footer>
+
+</body>
+</html>

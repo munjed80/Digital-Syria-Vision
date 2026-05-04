@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>متابعة الطلبات — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .request-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); margin-bottom: var(--space-lg); overflow: hidden; transition: box-shadow 0.2s; }
+    .request-card:hover { box-shadow: var(--shadow-md); }
+    .request-header { padding: var(--space-lg) var(--space-xl); display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--color-border-light); cursor: pointer; }
+    .request-body { padding: var(--space-xl); display: none; }
+    .request-body.open { display: block; }
+    .step-track { display: flex; align-items: center; gap: 0; margin: var(--space-xl) 0; }
+    .step { flex: 1; text-align: center; position: relative; }
+    .step::before { content: ''; position: absolute; top: 15px; left: -50%; right: 50%; height: 2px; background: var(--color-border); z-index: 0; }
+    .step:first-child::before { display: none; }
+    .step-circle { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--color-border); background: var(--color-surface); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; margin: 0 auto var(--space-sm); position: relative; z-index: 1; font-weight: 700; }
+    .step-circle.done { background: var(--color-success); border-color: var(--color-success); color: white; }
+    .step-circle.active { background: var(--color-primary); border-color: var(--color-primary); color: white; }
+    .step-circle.failed { background: var(--color-danger); border-color: var(--color-danger); color: white; }
+    .step::before { background: var(--color-border); }
+    .step.done::before { background: var(--color-success); }
+    .step-label { font-size: 0.7rem; color: var(--color-text-muted); line-height: 1.3; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right: 260px; margin-left: 0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">☰</button>
+          <span class="topbar-title">متابعة الطلبات</span>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-success">🔒 NDID متصل</span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <h1 class="page-header-title">🔍 متابعة طلباتي</h1>
+          <p class="page-header-sub">تتبع حالة جميع طلباتك الحكومية في مكان واحد</p>
+          <div class="page-header-actions">
+            <a href="services.html" class="btn btn-primary">+ طلب جديد</a>
+          </div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-grid" style="margin-bottom:var(--space-2xl);">
+          <div class="stat-card success"><div class="stat-icon success">✅</div><div class="stat-value">2</div><div class="stat-label">مكتملة</div></div>
+          <div class="stat-card primary"><div class="stat-icon primary">⏳</div><div class="stat-value">1</div><div class="stat-label">قيد المراجعة</div></div>
+          <div class="stat-card gold"><div class="stat-icon gold">📂</div><div class="stat-value">1</div><div class="stat-label">بانتظار مستندات</div></div>
+          <div class="stat-card danger"><div class="stat-icon danger">❌</div><div class="stat-value">1</div><div class="stat-label">مرفوضة</div></div>
+        </div>
+
+        <!-- Applications List -->
+        <div id="applications-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('citizen');
+
+    const STEP_LABELS = {
+      'ID-001': ['تقديم الطلب', 'مراجعة البيانات', 'الموافقة', 'إصدار البطاقة'],
+      'PS-001': ['تقديم الطلب', 'الفحص الأمني', 'الطباعة', 'التسليم'],
+      'BC-001': ['تقديم الطلب', 'التحقق', 'الإصدار', 'التسليم'],
+      'DR-001': ['تقديم الطلب', 'اختبار القيادة', 'الموافقة', 'إصدار الرخصة'],
+      'ED-001': ['رفع المستندات', 'التحقق الأكاديمي', 'التصديق'],
+      'default': ['تقديم الطلب', 'قيد المراجعة', 'الموافقة', 'الإنجاز']
+    };
+
+    function getStepClass(index, currentStep, status) {
+      if (status === 'rejected' || status === 'مرفوض') return index === 0 ? 'failed' : '';
+      if (index < currentStep) return 'done';
+      if (index === currentStep) return 'active';
+      return '';
+    }
+
+    function renderApplications() {
+      const container = document.getElementById('applications-list');
+      container.innerHTML = MOCK_APPLICATIONS.map((app, i) => {
+        const steps = STEP_LABELS[app.serviceId] || STEP_LABELS['default'];
+        const isRejected = app.statusEn === 'rejected';
+        const isPendingDocs = app.statusEn === 'pending_docs';
+
+        const stepsHTML = steps.map((label, idx) => {
+          const cls = getStepClass(idx, app.step, app.statusEn);
+          const icon = cls === 'done' ? '✓' : cls === 'failed' ? '✗' : cls === 'active' ? '●' : (idx + 1);
+          return `
+            <div class="step ${cls}">
+              <div class="step-circle ${cls}">${icon}</div>
+              <div class="step-label">${label}</div>
+            </div>
+          `;
+        }).join('');
+
+        const statusBadgeMap = {
+          'مكتمل': 'badge-success', 'completed': 'badge-success',
+          'قيد المراجعة': 'badge-info', 'under_review': 'badge-info',
+          'بانتظار المستندات': 'badge-warning', 'pending_docs': 'badge-warning',
+          'مرفوض': 'badge-danger', 'rejected': 'badge-danger'
+        };
+
+        return `
+          <div class="request-card">
+            <div class="request-header" onclick="toggleDetails(${i})">
+              <div>
+                <div style="font-weight:700;font-size:1rem;color:var(--color-primary);margin-bottom:4px;">${app.service}</div>
+                <div style="font-size:0.8rem;color:var(--color-text-muted);">${app.id} | تاريخ التقديم: ${app.submitDate}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--space-md);">
+                <span class="badge ${statusBadgeMap[app.status] || 'badge-primary'}">${app.status}</span>
+                <span id="arrow-${i}" style="font-size:1.2rem;color:var(--color-text-muted);transition:0.2s;">▼</span>
+              </div>
+            </div>
+            <div class="request-body" id="details-${i}">
+              <!-- Step Tracker -->
+              <div>
+                <div style="font-size:0.85rem;font-weight:700;color:var(--color-text-muted);margin-bottom:var(--space-md);">مراحل الطلب</div>
+                <div class="step-track">${stepsHTML}</div>
+              </div>
+
+              <!-- Details Grid -->
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-md);margin-bottom:var(--space-xl);">
+                <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+                  <div style="font-size:0.75rem;color:var(--color-text-muted);">تاريخ التقديم</div>
+                  <div style="font-weight:700;margin-top:4px;">${app.submitDate}</div>
+                </div>
+                <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+                  <div style="font-size:0.75rem;color:var(--color-text-muted);">آخر تحديث</div>
+                  <div style="font-weight:700;margin-top:4px;">${app.updateDate}</div>
+                </div>
+                <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+                  <div style="font-size:0.75rem;color:var(--color-text-muted);">الرسوم</div>
+                  <div style="font-weight:700;margin-top:4px;">${formatCurrency(app.fee)}</div>
+                </div>
+                <div style="padding:var(--space-md);background:var(--color-background);border-radius:var(--radius-md);">
+                  <div style="font-size:0.75rem;color:var(--color-text-muted);">حالة الدفع</div>
+                  <div style="font-weight:700;margin-top:4px;">${app.paid ? '<span style="color:var(--color-success);">✅ مدفوع</span>' : '<span style="color:var(--color-danger);">❌ غير مدفوع</span>'}</div>
+                </div>
+              </div>
+
+              ${isPendingDocs ? `
+                <div class="alert alert-warning">
+                  <span>📎</span>
+                  <div>
+                    <strong>مستندات مطلوبة</strong>
+                    <div style="margin-top:4px;font-size:0.85rem;">الرجاء رفع المستندات التالية: صورة الشهادة الأصلية</div>
+                    <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="showToast('سيتم إضافة وظيفة رفع الملفات قريباً','success')">رفع المستندات</button>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${isRejected ? `
+                <div class="alert alert-danger">
+                  <span>❌</span>
+                  <div>
+                    <strong>سبب الرفض</strong>
+                    <div style="margin-top:4px;font-size:0.85rem;">بيانات غير مكتملة — يرجى التقدم بطلب جديد مع توفير جميع المستندات المطلوبة.</div>
+                    <a href="services.html" class="btn btn-primary btn-sm" style="margin-top:8px;">تقديم طلب جديد</a>
+                  </div>
+                </div>
+              ` : ''}
+
+              ${app.statusEn === 'completed' ? `
+                <div class="alert alert-success">
+                  <span>🎉</span>
+                  <div>
+                    <strong>تم إنجاز طلبك بنجاح</strong>
+                    <div style="margin-top:4px;font-size:0.85rem;">وثيقتك جاهزة للاستلام أو التحميل.</div>
+                    <button class="btn btn-success btn-sm" style="margin-top:8px;" onclick="showToast('جارٍ تحميل الوثيقة...')">⬇️ تحميل الوثيقة</button>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleDetails(index) {
+      const body = document.getElementById(`details-${index}`);
+      const arrow = document.getElementById(`arrow-${index}`);
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open');
+      arrow.textContent = isOpen ? '▼' : '▲';
+    }
+
+    renderApplications();
+  </script>
+</body>
+</html>

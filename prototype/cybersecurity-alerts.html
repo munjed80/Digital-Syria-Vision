@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تنبيهات الأمن السيبراني — SY-CERT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; background: #0a0e1a; color: #e0e8ff; }
+    .topbar { background: #0d1224; border-color: rgba(255,255,255,0.05); }
+    .topbar-title { color: #ff5252; }
+    .sidebar { background: linear-gradient(180deg, #0d1224 0%, #0a0e1a 100%); }
+    .page-content { background: #0a0e1a; }
+    .alert-card { border-radius: var(--radius-lg); margin-bottom: var(--space-md); overflow: hidden; cursor: pointer; transition: all 0.2s; }
+    .alert-card:hover { transform: translateX(-4px); }
+    .alert-card-header { padding: var(--space-lg) var(--space-xl); display: flex; align-items: center; gap: var(--space-md); }
+    .alert-card-body { padding: var(--space-xl); display: none; border-top: 1px solid rgba(255,255,255,0.05); }
+    .alert-card-body.open { display: block; }
+    .level-critical { background: rgba(198,40,40,0.15); border: 1px solid rgba(198,40,40,0.4); }
+    .level-high { background: rgba(230,81,0,0.15); border: 1px solid rgba(230,81,0,0.4); }
+    .level-medium { background: rgba(249,168,37,0.1); border: 1px solid rgba(249,168,37,0.3); }
+    .level-low { background: rgba(46,125,50,0.1); border: 1px solid rgba(46,125,50,0.3); }
+    .level-badge-critical { background: rgba(198,40,40,0.3); color: #ff5252; border: 1px solid rgba(198,40,40,0.5); }
+    .level-badge-high { background: rgba(230,81,0,0.3); color: #ff9800; border: 1px solid rgba(230,81,0,0.5); }
+    .level-badge-medium { background: rgba(249,168,37,0.2); color: #ffd740; border: 1px solid rgba(249,168,37,0.4); }
+    .level-badge-low { background: rgba(46,125,50,0.2); color: #69f0ae; border: 1px solid rgba(46,125,50,0.3); }
+    .soc-metric { background: #0d1224; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-md); padding: var(--space-lg); text-align: center; }
+    .soc-val { font-size: 2rem; font-weight: 800; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right:260px;margin-left:0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ff5252;">☰</button>
+          <span class="topbar-title">🛡️ SY-CERT — مركز الاستجابة للطوارئ السيبرانية</span>
+        </div>
+        <div class="topbar-right">
+          <span style="background:rgba(198,40,40,0.2);border:1px solid rgba(198,40,40,0.4);color:#ff5252;padding:4px 12px;border-radius:99px;font-size:0.75rem;font-weight:700;">🔴 تشغيل 24/7</span>
+          <span id="current-time" style="font-size:0.8rem;color:rgba(255,255,255,0.4);"></span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg,#1a0a0a 0%,#2d0a0a 100%);border-radius:var(--radius-xl);padding:var(--space-2xl);margin-bottom:var(--space-2xl);border:1px solid rgba(198,40,40,0.2);">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-md);">
+            <div>
+              <h1 style="color:#ff5252;font-size:1.5rem;margin-bottom:4px;">مركز العمليات الأمنية — SY-CERT</h1>
+              <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">البنية التحتية الحكومية السورية | تهديدات موثقة للأغراض التوضيحية فقط</p>
+            </div>
+            <div style="display:flex;gap:var(--space-md);">
+              <button class="btn btn-sm" style="background:rgba(198,40,40,0.2);color:#ff5252;border:1px solid rgba(198,40,40,0.4);" onclick="showToast('إشعار مرسل للوزارات')">📢 إشعار عام</button>
+              <button class="btn btn-sm" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.1);">📊 تقرير شامل</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOC Stats -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:var(--space-md);margin-bottom:var(--space-2xl);">
+          <div class="soc-metric">
+            <div class="soc-val" style="color:#ff5252;">1</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">حوادث حرجة</div>
+          </div>
+          <div class="soc-metric">
+            <div class="soc-val" style="color:#ff9800;">2</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">تهديدات عالية</div>
+          </div>
+          <div class="soc-metric">
+            <div class="soc-val" style="color:#ffd740;">1</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">متوسطة</div>
+          </div>
+          <div class="soc-metric">
+            <div class="soc-val" style="color:#69f0ae;">1</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">منخفضة</div>
+          </div>
+          <div class="soc-metric">
+            <div class="soc-val" style="color:#4fc3f7;">&lt; 30 دقيقة</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">زمن الاستجابة P1</div>
+          </div>
+          <div class="soc-metric">
+            <div class="soc-val" style="color:#69f0ae;">40</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">محللون نشطون</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--space-xl);">
+          <!-- Alerts List -->
+          <div>
+            <div style="font-weight:700;color:rgba(255,255,255,0.6);font-size:0.85rem;margin-bottom:var(--space-lg);letter-spacing:1px;text-transform:uppercase;">تنبيهات أمنية نشطة</div>
+            <div id="alerts-container"></div>
+          </div>
+
+          <!-- SOC Status Panel -->
+          <div style="display:flex;flex-direction:column;gap:var(--space-xl);">
+            <!-- Threat Level -->
+            <div style="background:#0d1224;border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-lg);padding:var(--space-xl);">
+              <div style="font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:var(--space-lg);font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;">مستوى التهديد الوطني</div>
+              <div style="text-align:center;padding:var(--space-xl);">
+                <div style="font-size:3rem;margin-bottom:var(--space-md);">🟡</div>
+                <div style="font-size:1.5rem;font-weight:800;color:#ffd740;">متوسط</div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:8px;">ELEVATED — Enhanced vigilance required</div>
+              </div>
+              <div style="font-size:0.75rem;color:rgba(255,255,255,0.3);border-top:1px solid rgba(255,255,255,0.05);padding-top:var(--space-md);">
+                آخر تقييم: 04 مايو 2026 — 03:30
+              </div>
+            </div>
+
+            <!-- Active Teams -->
+            <div style="background:#0d1224;border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-lg);padding:var(--space-xl);">
+              <div style="font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:var(--space-lg);font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;">فرق العمل النشطة</div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:0.85rem;">فريق الاستجابة — وردية ليلية</span>
+                  <span style="color:#69f0ae;font-weight:700;font-size:0.8rem;">● نشط</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:0.85rem;">محللو التهديدات الذكية</span>
+                  <span style="color:#69f0ae;font-weight:700;font-size:0.8rem;">● نشط</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:0.85rem;">فريق الطب الجنائي الرقمي</span>
+                  <span style="color:#ffd740;font-weight:700;font-size:0.8rem;">● احتياطي</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:0.85rem;">اختبار الاختراق</span>
+                  <span style="color:#69f0ae;font-weight:700;font-size:0.8rem;">● نشط</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div style="background:#0d1224;border:1px solid rgba(255,255,255,0.05);border-radius:var(--radius-lg);padding:var(--space-xl);">
+              <div style="font-weight:700;color:rgba(255,255,255,0.6);margin-bottom:var(--space-lg);font-size:0.8rem;letter-spacing:1px;text-transform:uppercase;">إجراءات طوارئ</div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+                <button class="btn btn-sm" style="background:rgba(198,40,40,0.2);color:#ff5252;border:1px solid rgba(198,40,40,0.4);justify-content:center;" onclick="declareIncident()">🚨 إعلان حادثة P1</button>
+                <button class="btn btn-sm" style="background:rgba(255,152,0,0.1);color:#ff9800;border:1px solid rgba(255,152,0,0.3);justify-content:center;" onclick="showToast('جارٍ تفعيل بروتوكول العزل...')">🔐 عزل الشبكة</button>
+                <button class="btn btn-sm" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);justify-content:center;" onclick="showToast('جارٍ تنبيه CERTs الدولية...')">🌐 تنبيه CERT دولي</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('ministry');
+
+    function renderAlerts() {
+      const container = document.getElementById('alerts-container');
+      container.innerHTML = MOCK_CYBER_ALERTS.map((alert, i) => {
+        const levelLabels = { critical: 'حرج', high: 'عالي', medium: 'متوسط', low: 'منخفض' };
+        const levelAr = levelLabels[alert.level] || alert.level;
+        
+        return `
+          <div class="alert-card level-${alert.level}" onclick="toggleAlert(${i})">
+            <div class="alert-card-header">
+              <div style="font-size:1.5rem;">${alert.level === 'critical' ? '🔴' : alert.level === 'high' ? '🟠' : alert.level === 'medium' ? '🟡' : '🟢'}</div>
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                  <span style="font-weight:700;">${alert.type}</span>
+                  <span class="badge level-badge-${alert.level}" style="border-radius:99px;">${levelAr}</span>
+                </div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">${alert.date} | الهدف: ${alert.target}</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:var(--space-md);">
+                <span style="font-size:0.8rem;color:rgba(255,255,255,0.5);">${alert.status}</span>
+                <span style="color:rgba(255,255,255,0.3);" id="alert-arrow-${i}">▼</span>
+              </div>
+            </div>
+            <div class="alert-card-body" id="alert-body-${i}">
+              <div style="display:grid;gap:var(--space-md);">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+                  <div style="background:rgba(0,0,0,0.2);border-radius:var(--radius-md);padding:var(--space-md);">
+                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">المصدر</div>
+                    <div style="font-family:monospace;font-size:0.85rem;margin-top:4px;">${alert.source}</div>
+                  </div>
+                  <div style="background:rgba(0,0,0,0.2);border-radius:var(--radius-md);padding:var(--space-md);">
+                    <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">الحالة</div>
+                    <div style="font-weight:700;margin-top:4px;color:${alert.status === 'تم التخفيف' || alert.status === 'محجوب' || alert.status === 'معالج' ? '#69f0ae' : '#ffd740'}">${alert.status}</div>
+                  </div>
+                </div>
+                <div style="background:rgba(0,0,0,0.2);border-radius:var(--radius-md);padding:var(--space-md);">
+                  <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-bottom:4px;">التفاصيل</div>
+                  <div style="font-size:0.85rem;">${alert.details}</div>
+                </div>
+                <div style="display:flex;gap:var(--space-sm);">
+                  <button class="btn btn-sm" style="background:rgba(255,82,82,0.15);color:#ff5252;border:1px solid rgba(255,82,82,0.3);" onclick="event.stopPropagation();escalateAlert('${alert.id}')">⬆️ تصعيد</button>
+                  <button class="btn btn-sm" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);" onclick="event.stopPropagation();showToast('فتح ملف التحقيق...')">📁 فتح الملف</button>
+                  <button class="btn btn-sm" style="background:rgba(105,240,174,0.1);color:#69f0ae;border:1px solid rgba(105,240,174,0.2);" onclick="event.stopPropagation();resolveAlert('${alert.id}')">✓ تمت المعالجة</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleAlert(i) {
+      const body = document.getElementById(`alert-body-${i}`);
+      const arrow = document.getElementById(`alert-arrow-${i}`);
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open');
+      arrow.textContent = isOpen ? '▼' : '▲';
+    }
+
+    function escalateAlert(id) {
+      showToast(`تم تصعيد التنبيه ${id} إلى مدير SY-CERT`, 'error');
+    }
+
+    function resolveAlert(id) {
+      showToast(`تم وضع علامة "معالج" على التنبيه ${id}`, 'success');
+    }
+
+    function declareIncident() {
+      if (confirm('هل أنت متأكد من إعلان حادثة P1؟ سيتم إشعار الفريق الكامل وقيادة SY-CERT.')) {
+        showToast('🚨 تم إعلان الحادثة P1 — جاري إشعار الفريق', 'error');
+      }
+    }
+
+    function updateTime() {
+      document.getElementById('current-time').textContent = new Date().toLocaleString('ar-SY');
+    }
+
+    renderAlerts();
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

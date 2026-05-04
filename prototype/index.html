@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة المواطن — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; }
+    
+    .hero {
+      background: var(--gradient-hero);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-2xl);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: rgba(197,160,40,0.2);
+      border: 1px solid rgba(197,160,40,0.4);
+      color: var(--color-secondary-light);
+      padding: 6px 16px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-xl);
+    }
+
+    .hero-logo {
+      width: 80px;
+      height: 80px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: var(--space-xl);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      margin-bottom: var(--space-sm);
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.7);
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .hero-tagline {
+      font-size: 0.9rem;
+      color: var(--color-secondary-light);
+      text-align: center;
+      margin-bottom: var(--space-3xl);
+      font-style: italic;
+    }
+
+    .login-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      width: 100%;
+      max-width: 440px;
+      backdrop-filter: blur(20px);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-title {
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin: var(--space-xl) 0;
+    }
+
+    .login-divider-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    .login-divider-text {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+    }
+
+    .login-card .form-control {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      color: white;
+    }
+
+    .login-card .form-control::placeholder { color: rgba(255,255,255,0.4); }
+    .login-card .form-label { color: rgba(255,255,255,0.85); }
+    .login-card .form-control:focus { border-color: var(--color-secondary); background: rgba(255,255,255,0.15); }
+
+    .ndid-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: rgba(197,160,40,0.15);
+      border: 1.5px solid rgba(197,160,40,0.4);
+      border-radius: var(--radius-md);
+      color: var(--color-secondary-light);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      margin-bottom: var(--space-md);
+    }
+
+    .ndid-btn:hover {
+      background: rgba(197,160,40,0.25);
+      border-color: var(--color-secondary);
+    }
+
+    .ndid-btn-icon {
+      font-size: 1.5rem;
+    }
+
+    .portal-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+      margin-top: var(--space-xl);
+    }
+
+    .portal-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-md);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+
+    .portal-link:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .portal-link-icon { font-size: 1.5rem; }
+
+    .hero-stats {
+      display: flex;
+      gap: var(--space-3xl);
+      margin-top: var(--space-3xl);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-stat {
+      text-align: center;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .hero-stat-value {
+      display: block;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--color-secondary-light);
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: rgba(56,142,60,0.2);
+      border: 1px solid rgba(56,142,60,0.4);
+      color: #a5d6a7;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: var(--space-xl);
+    }
+
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2rem; }
+      .hero-stats { gap: var(--space-2xl); }
+      .hero-stat-value { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="hero" role="main">
+    <div class="hero-badge">🇸🇾 &nbsp; رؤية سوريا الرقمية — النسخة التجريبية</div>
+    
+    <div class="hero-logo">🏛️</div>
+    
+    <h1 class="hero-title">بوابة المواطن الرقمية</h1>
+    <p class="hero-subtitle">Digital Syria Vision — Citizen Portal</p>
+    <p class="hero-tagline">"خدمات حكومية شاملة في متناول يدك"</p>
+
+    <div class="login-card" role="form" aria-label="نموذج تسجيل الدخول">
+      <h2 class="login-title">تسجيل الدخول</h2>
+
+      <button class="ndid-btn" onclick="loginWithNDID()" aria-label="تسجيل الدخول بالهوية الرقمية الوطنية">
+        <span class="ndid-btn-icon">🪪</span>
+        <div>
+          <div style="font-size:1rem;">تسجيل الدخول بالهوية الرقمية (NDID)</div>
+          <div style="font-size:0.7rem;opacity:0.8;">National Digital Identity Login</div>
+        </div>
+      </button>
+
+      <div class="login-divider">
+        <div class="login-divider-line"></div>
+        <span class="login-divider-text">أو</span>
+        <div class="login-divider-line"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="nin-input">رقم الهوية الوطنية (NIN)</label>
+        <input 
+          type="text" 
+          id="nin-input"
+          class="form-control" 
+          placeholder="SY-1990-0001-000000-0"
+          aria-label="رقم الهوية الوطنية"
+          autocomplete="off"
+        >
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password-input">كلمة المرور</label>
+        <input 
+          type="password" 
+          id="password-input"
+          class="form-control" 
+          placeholder="••••••••"
+          aria-label="كلمة المرور"
+          autocomplete="off"
+        >
+      </div>
+
+      <button 
+        class="btn btn-gold" 
+        style="width:100%;justify-content:center;font-size:1rem;padding:14px;"
+        onclick="handleLogin()"
+      >
+        دخول &nbsp; →
+      </button>
+
+      <div class="portal-links">
+        <a href="ministry-dashboard.html" class="portal-link">
+          <span class="portal-link-icon">🏛️</span>
+          <span>بوابة الوزارات</span>
+        </a>
+        <a href="national-command.html" class="portal-link">
+          <span class="portal-link-icon">🗺️</span>
+          <span>مركز القيادة</span>
+        </a>
+        <a href="cybersecurity-alerts.html" class="portal-link">
+          <span class="portal-link-icon">🛡️</span>
+          <span>الأمن السيبراني</span>
+        </a>
+        <a href="dashboard.html" class="portal-link">
+          <span class="portal-link-icon">👤</span>
+          <span>لوحة المواطن</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="security-badge">
+      🔒 &nbsp; محمي بتشفير TLS 1.3 — بياناتك آمنة على البنية التحتية السيادية السورية
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-value">+142K</span>
+        <span class="hero-stat-label">طلب مكتمل</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">20</span>
+        <span class="hero-stat-label">خدمة متاحة</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">84%</span>
+        <span class="hero-stat-label">رضا المواطنين</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">3 أيام</span>
+        <span class="hero-stat-label">متوسط وقت الإنجاز</span>
+      </div>
+    </div>
+  </main>
+
+  <script src="assets/js/app.js"></script>
+  <script>
+    function loginWithNDID() {
+      const btn = document.querySelector('.ndid-btn');
+      btn.innerHTML = '<span class="ndid-btn-icon">⏳</span><div><div style="font-size:1rem;">جاري التحقق من الهوية...</div></div>';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }
+
+    function handleLogin() {
+      const nin = document.getElementById('nin-input').value;
+      const pwd = document.getElementById('password-input').value;
+      
+      if (!nin || !pwd) {
+        alert('الرجاء إدخال رقم الهوية وكلمة المرور');
+        return;
+      }
+      
+      // MOCK: Always succeed for demo
+      window.location.href = 'dashboard.html';
+    }
+
+    // Allow Enter key to login
+    document.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>
