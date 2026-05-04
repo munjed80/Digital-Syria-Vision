@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مركز القيادة الوطني — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; background: #0a0e1a; color: #e0e8ff; }
+    .topbar { background: #0d1224; border-color: rgba(255,255,255,0.05); }
+    .topbar-title { color: #90caf9; }
+    .sidebar { background: linear-gradient(180deg, #0d1224 0%, #0a0e1a 100%); }
+    .page-content { background: #0a0e1a; }
+    .command-card { background: #0d1224; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-lg); padding: var(--space-xl); }
+    .command-card .card-title { color: #90caf9; }
+    .metric-row { display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm) 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-val { font-weight: 700; font-size: 1rem; }
+    .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .map-placeholder { background: #111827; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-lg); padding: var(--space-2xl); position: relative; overflow: hidden; min-height: 300px; }
+    .map-node { position: absolute; width: 12px; height: 12px; border-radius: 50%; border: 2px solid; animation: pulse 2s infinite; }
+    .map-node.active { background: #4caf50; border-color: #4caf50; }
+    .map-node.warning { background: #ff9800; border-color: #ff9800; }
+    .map-node::after { content: attr(data-label); position: absolute; top: 14px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; white-space: nowrap; color: rgba(255,255,255,0.7); }
+    .ticker { overflow: hidden; height: 32px; }
+    .ticker-content { display: flex; gap: var(--space-2xl); animation: scroll 30s linear infinite; white-space: nowrap; }
+    @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-item { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right:260px;margin-left:0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#90caf9;">☰</button>
+          <span class="topbar-title">🗺️ مركز القيادة الوطني الرقمي</span>
+        </div>
+        <div class="topbar-right">
+          <span class="online-dot"></span>
+          <span style="color:#4caf50;font-size:0.8rem;font-weight:700;">جميع الأنظمة تعمل</span>
+          <span id="current-time" style="font-size:0.8rem;color:rgba(255,255,255,0.5);"></span>
+        </div>
+      </header>
+
+      <!-- Live Ticker -->
+      <div style="background:#0d1224;border-bottom:1px solid rgba(255,255,255,0.05);padding:6px var(--space-xl);">
+        <div class="ticker">
+          <div class="ticker-content" id="ticker"></div>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- Header Stats -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:var(--space-md);margin-bottom:var(--space-2xl);">
+          <div class="command-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:#4caf50;" data-count="142850">0</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">إجمالي طلبات منجزة</div>
+          </div>
+          <div class="command-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:#90caf9;">8,234</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">طلبات قيد المعالجة</div>
+          </div>
+          <div class="command-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:#ffb74d;">50K</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">مواطن مسجل (NDID)</div>
+          </div>
+          <div class="command-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:#4caf50;">99.97%</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">وقت تشغيل النظام</div>
+          </div>
+          <div class="command-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:#ce93d8;">84%</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">رضا المواطنين</div>
+          </div>
+          <div class="command-card" style="text-align:center;">
+            <div style="font-size:2.5rem;font-weight:800;color:#4caf50;">0</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);">حوادث أمنية نشطة</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:var(--space-xl);">
+          <!-- Map Area -->
+          <div>
+            <div class="map-placeholder" id="map-area">
+              <div style="text-align:center;color:rgba(255,255,255,0.3);margin-bottom:var(--space-lg);font-size:0.9rem;">🗺️ خريطة النشاط الرقمي الحكومي — سوريا</div>
+              <!-- Mock nodes representing governorates -->
+              <div class="map-node active" style="top:30%;left:50%;" data-label="دمشق"></div>
+              <div class="map-node active" style="top:20%;left:43%;" data-label="حمص"></div>
+              <div class="map-node warning" style="top:15%;left:45%;" data-label="حماة"></div>
+              <div class="map-node active" style="top:12%;left:40%;" data-label="حلب"></div>
+              <div class="map-node active" style="top:15%;left:25%;" data-label="اللاذقية"></div>
+              <div class="map-node active" style="top:35%;left:60%;" data-label="درعا"></div>
+              <div class="map-node active" style="top:20%;left:65%;" data-label="دير الزور"></div>
+              <div class="map-node active" style="top:25%;left:55%;" data-label="القنيطرة"></div>
+              <div id="map-pulse" style="position:absolute;bottom:var(--space-lg);left:0;right:0;display:flex;justify-content:center;gap:var(--space-2xl);font-size:0.75rem;color:rgba(255,255,255,0.5);">
+                <span><span class="map-node active" style="position:relative;top:0;left:0;display:inline-block;"></span> نشط</span>
+                <span><span class="map-node warning" style="position:relative;top:0;left:0;display:inline-block;"></span> تحت المراقبة</span>
+              </div>
+            </div>
+
+            <!-- Ministry Status Grid -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-md);margin-top:var(--space-xl);">
+              <div class="command-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md);">
+                  <span style="font-weight:700;font-size:0.9rem;">وزارة الداخلية</span>
+                  <span class="online-dot"></span>
+                </div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">طلبات اليوم: <strong style="color:white;">3,241</strong></div>
+                <div style="margin-top:8px;height:4px;background:rgba(255,255,255,0.1);border-radius:99px;"><div style="height:100%;width:94%;background:#4caf50;border-radius:99px;"></div></div>
+              </div>
+              <div class="command-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md);">
+                  <span style="font-weight:700;font-size:0.9rem;">وزارة الصحة</span>
+                  <span class="online-dot"></span>
+                </div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">طلبات اليوم: <strong style="color:white;">1,456</strong></div>
+                <div style="margin-top:8px;height:4px;background:rgba(255,255,255,0.1);border-radius:99px;"><div style="height:100%;width:88%;background:#4caf50;border-radius:99px;"></div></div>
+              </div>
+              <div class="command-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md);">
+                  <span style="font-weight:700;font-size:0.9rem;">وزارة التعليم</span>
+                  <span class="online-dot"></span>
+                </div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">طلبات اليوم: <strong style="color:white;">876</strong></div>
+                <div style="margin-top:8px;height:4px;background:rgba(255,255,255,0.1);border-radius:99px;"><div style="height:100%;width:76%;background:#4caf50;border-radius:99px;"></div></div>
+              </div>
+              <div class="command-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md);">
+                  <span style="font-weight:700;font-size:0.9rem;">وزارة المالية</span>
+                  <span class="map-node warning" style="position:relative;top:0;left:0;display:inline-block;width:10px;height:10px;"></span>
+                </div>
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);">طلبات اليوم: <strong style="color:white;">643</strong></div>
+                <div style="margin-top:8px;height:4px;background:rgba(255,255,255,0.1);border-radius:99px;"><div style="height:100%;width:65%;background:#ff9800;border-radius:99px;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Panel: System Status + Alerts -->
+          <div style="display:flex;flex-direction:column;gap:var(--space-xl);">
+            <!-- System Health -->
+            <div class="command-card">
+              <div style="font-weight:700;color:#90caf9;margin-bottom:var(--space-lg);">💻 صحة الأنظمة الأساسية</div>
+              <div class="metric-row"><span>بوابة المواطن</span><span class="metric-val" style="color:#4caf50;">99.97% ↑</span></div>
+              <div class="metric-row"><span>نظام NDID</span><span class="metric-val" style="color:#4caf50;">100% ↑</span></div>
+              <div class="metric-row"><span>بوابة API الوطنية</span><span class="metric-val" style="color:#4caf50;">99.95% ↑</span></div>
+              <div class="metric-row"><span>بوابة الدفع</span><span class="metric-val" style="color:#4caf50;">99.99% ↑</span></div>
+              <div class="metric-row"><span>SyriaGovCloud DC1</span><span class="metric-val" style="color:#4caf50;">طبيعي</span></div>
+              <div class="metric-row"><span>SyriaGovCloud DC2</span><span class="metric-val" style="color:#4caf50;">إنتظار</span></div>
+              <div class="metric-row"><span>SY-CERT</span><span class="metric-val" style="color:#4caf50;">24/7 نشط</span></div>
+            </div>
+
+            <!-- Live Metrics -->
+            <div class="command-card">
+              <div style="font-weight:700;color:#90caf9;margin-bottom:var(--space-lg);">📡 مقاييس حية</div>
+              <div class="metric-row"><span>طلبات/دقيقة</span><span class="metric-val" id="req-rate">847</span></div>
+              <div class="metric-row"><span>وقت استجابة API</span><span class="metric-val" id="api-time">124ms</span></div>
+              <div class="metric-row"><span>معدل نجاح المدفوعات</span><span class="metric-val" style="color:#4caf50;">98.7%</span></div>
+              <div class="metric-row"><span>مستخدمون نشطون الآن</span><span class="metric-val" id="active-users">2,341</span></div>
+              <div class="metric-row"><span>استخدام وحدة المعالجة</span><span class="metric-val">43%</span></div>
+              <div class="metric-row"><span>الاستخدام الشبكي</span><span class="metric-val">2.4 Gbps</span></div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="command-card">
+              <div style="font-weight:700;color:#90caf9;margin-bottom:var(--space-lg);">⚡ إجراءات سريعة</div>
+              <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+                <a href="cybersecurity-alerts.html" class="btn btn-danger btn-sm" style="justify-content:center;">🚨 تنبيهات الأمن السيبراني</a>
+                <button class="btn btn-sm" style="background:rgba(144,202,249,0.1);color:#90caf9;border:1px solid rgba(144,202,249,0.2);justify-content:center;" onclick="showToast('جارٍ تحديث التقرير...')">📊 تقرير آني</button>
+                <button class="btn btn-sm" style="background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.1);justify-content:center;" onclick="showToast('إشعار مرسل للوزارات')">📢 إشعار وزاري</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('ministry');
+
+    // Live ticker
+    const events = [
+      { icon: '✅', text: 'APP-2026-143201: تجديد هوية — وزارة الداخلية — تمت الموافقة' },
+      { icon: '💳', text: 'PAY-2026-789012: دفع 5,000 ل.س — شهادة الميلاد — مكتمل' },
+      { icon: '🪪', text: 'NDID-2026-050012: تسجيل مواطن جديد — دمشق' },
+      { icon: '🔒', text: 'CA-2026-089: تم تخفيف هجوم DDoS — البوابة الرئيسية' },
+      { icon: '📋', text: 'APP-2026-143198: جواز سفر — مستلم — جاري التحقق الأمني' },
+      { icon: '✅', text: 'APP-2026-143195: رخصة قيادة — اكتمل الإنجاز' },
+    ];
+    const ticker = document.getElementById('ticker');
+    const allEvents = [...events, ...events]; // duplicate for seamless loop
+    ticker.innerHTML = allEvents.map(e => `
+      <span class="ticker-item">
+        <span>${e.icon}</span>
+        <span>${e.text}</span>
+        <span style="color:rgba(255,255,255,0.2);margin-right:var(--space-2xl);">|</span>
+      </span>
+    `).join('');
+
+    // Animate live metrics
+    setInterval(() => {
+      document.getElementById('req-rate').textContent = Math.floor(800 + Math.random() * 200);
+      document.getElementById('api-time').textContent = Math.floor(110 + Math.random() * 50) + 'ms';
+      document.getElementById('active-users').textContent = (2200 + Math.floor(Math.random() * 400)).toLocaleString('ar');
+    }, 3000);
+
+    function updateTime() {
+      document.getElementById('current-time').textContent = new Date().toLocaleString('ar-SY');
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

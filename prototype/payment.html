@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة الدفع الحكومي — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .payment-method { border: 2px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); cursor: pointer; transition: all 0.2s; }
+    .payment-method:hover { border-color: var(--color-primary); }
+    .payment-method.selected { border-color: var(--color-primary); background: var(--color-info-light); }
+    .payment-method-header { display: flex; align-items: center; gap: var(--space-md); }
+    .payment-method-icon { font-size: 2rem; }
+    .payment-step { display: none; }
+    .payment-step.active { display: block; }
+    .success-animation { text-align: center; padding: var(--space-3xl); }
+    .success-icon { font-size: 5rem; animation: popIn 0.5s ease; display: block; margin-bottom: var(--space-xl); }
+    @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 80% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+    .card-input { letter-spacing: 3px; font-family: 'JetBrains Mono', monospace; }
+    .wallet-balance { background: var(--gradient-primary); color: white; border-radius: var(--radius-lg); padding: var(--space-2xl); margin-bottom: var(--space-xl); }
+    .transaction-row { display: flex; justify-content: space-between; align-items: center; padding: var(--space-md) 0; border-bottom: 1px solid var(--color-border-light); }
+    .transaction-row:last-child { border-bottom: none; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right: 260px; margin-left: 0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">☰</button>
+          <span class="topbar-title">بوابة الدفع الحكومي</span>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-success">🔒 PCI-DSS متوافق</span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <h1 class="page-header-title">💳 بوابة الدفع الحكومي</h1>
+          <p class="page-header-sub">ادفع رسوم الخدمات الحكومية بأمان وسهولة</p>
+        </div>
+
+        <div class="grid-2" style="align-items:start;">
+          <!-- Left: Payment Form -->
+          <div>
+            <!-- Step 1: Select Service -->
+            <div class="payment-step active" id="step-1">
+              <div class="card">
+                <div class="card-header"><span class="card-title">① اختر الدفعة</span></div>
+                <div class="card-body">
+                  <!-- Pending payments -->
+                  <div style="margin-bottom:var(--space-xl);">
+                    <div style="font-size:0.85rem;font-weight:700;color:var(--color-text-muted);margin-bottom:var(--space-md);">مدفوعات معلقة</div>
+                    <div style="border:1.5px solid var(--color-warning);border-radius:var(--radius-md);padding:var(--space-lg);cursor:pointer;background:var(--color-warning-light);" onclick="selectPayment('APP-2026-001156', 'تصديق الشهادة الدراسية', 10000)">
+                      <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                          <div style="font-weight:700;">🎓 تصديق الشهادة الدراسية</div>
+                          <div style="font-size:0.8rem;color:var(--color-text-muted);">APP-2026-001156</div>
+                        </div>
+                        <div style="font-weight:800;font-size:1.1rem;color:var(--color-warning);">10,000 ل.س</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="font-size:0.85rem;font-weight:700;color:var(--color-text-muted);margin-bottom:var(--space-md);">أو أدخل رقم طلب للدفع</div>
+                  <div style="display:flex;gap:var(--space-sm);">
+                    <input type="text" id="app-ref" class="form-control" placeholder="APP-2026-XXXXXX" style="flex:1;">
+                    <button class="btn btn-primary" onclick="lookupApplication()">بحث</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Select Method -->
+            <div class="payment-step" id="step-2">
+              <div class="card">
+                <div class="card-header">
+                  <span class="card-title">② طريقة الدفع</span>
+                  <button class="btn btn-outline btn-sm" onclick="goToStep(1)">← عودة</button>
+                </div>
+                <div class="card-body">
+                  <div id="payment-summary" style="background:var(--color-background);border-radius:var(--radius-md);padding:var(--space-lg);margin-bottom:var(--space-xl);"></div>
+                  
+                  <div style="display:grid;gap:var(--space-md);" id="payment-methods">
+                    <div class="payment-method selected" onclick="selectMethod(this, 'card')">
+                      <div class="payment-method-header">
+                        <span class="payment-method-icon">💳</span>
+                        <div>
+                          <div style="font-weight:700;">بطاقة مصرفية</div>
+                          <div style="font-size:0.8rem;color:var(--color-text-muted);">Visa / Mastercard</div>
+                        </div>
+                        <span style="margin-right:auto;font-size:1.2rem;" id="check-card">✓</span>
+                      </div>
+                    </div>
+                    <div class="payment-method" onclick="selectMethod(this, 'wallet')">
+                      <div class="payment-method-header">
+                        <span class="payment-method-icon">📱</span>
+                        <div>
+                          <div style="font-weight:700;">المحفظة الرقمية الحكومية</div>
+                          <div style="font-size:0.8rem;color:var(--color-success);">رصيدك: 45,000 ل.س</div>
+                        </div>
+                        <span style="margin-right:auto;font-size:1.2rem;display:none;" id="check-wallet">✓</span>
+                      </div>
+                    </div>
+                    <div class="payment-method" onclick="selectMethod(this, 'bank')">
+                      <div class="payment-method-header">
+                        <span class="payment-method-icon">🏦</span>
+                        <div>
+                          <div style="font-weight:700;">تحويل بنكي مباشر</div>
+                          <div style="font-size:0.8rem;color:var(--color-text-muted);">من حسابك البنكي</div>
+                        </div>
+                        <span style="margin-right:auto;font-size:1.2rem;display:none;" id="check-bank">✓</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card Form -->
+                  <div id="card-form" style="margin-top:var(--space-xl);">
+                    <div class="form-group">
+                      <label class="form-label">رقم البطاقة</label>
+                      <input type="text" class="form-control card-input" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" oninput="formatCardNumber(this)">
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+                      <div class="form-group">
+                        <label class="form-label">تاريخ الانتهاء</label>
+                        <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">CVV</label>
+                        <input type="password" class="form-control" placeholder="•••" maxlength="3">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">اسم حامل البطاقة</label>
+                      <input type="text" class="form-control" value="MOHAMMED A AL-ALI">
+                    </div>
+                  </div>
+
+                  <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:1rem;margin-top:var(--space-md);" onclick="processPayment()">
+                    🔒 إتمام الدفع الآن
+                  </button>
+                  <p style="text-align:center;font-size:0.75rem;color:var(--color-text-muted);margin-top:var(--space-sm);">محمي بتشفير TLS 1.3 | متوافق مع PCI-DSS المستوى الأول</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Success -->
+            <div class="payment-step" id="step-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="success-animation">
+                    <span class="success-icon">✅</span>
+                    <h2 style="color:var(--color-success);margin-bottom:var(--space-md);">تم الدفع بنجاح!</h2>
+                    <div id="success-details" style="margin-bottom:var(--space-xl);"></div>
+                    <div class="alert alert-success" style="text-align:right;">
+                      📲 تم إرسال إيصال الدفع إلى رقمك المسجل وبريدك الإلكتروني
+                    </div>
+                    <div style="display:flex;gap:var(--space-md);justify-content:center;margin-top:var(--space-xl);">
+                      <button class="btn btn-outline" onclick="printReceipt()">🖨️ طباعة الإيصال</button>
+                      <a href="tracking.html" class="btn btn-primary">متابعة الطلب</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Wallet + History -->
+          <div>
+            <!-- Digital Wallet -->
+            <div class="wallet-balance">
+              <div style="font-size:0.85rem;opacity:0.7;margin-bottom:var(--space-sm);">محفظتك الرقمية الحكومية</div>
+              <div style="font-size:2.5rem;font-weight:800;margin-bottom:var(--space-xs);">45,000 ل.س</div>
+              <div style="font-size:0.8rem;opacity:0.7;">رقم المحفظة: WL-SY-2026-123456</div>
+              <div style="margin-top:var(--space-lg);display:flex;gap:var(--space-sm);">
+                <button class="btn btn-gold btn-sm" onclick="showToast('وظيفة شحن المحفظة قريباً')">+ شحن الرصيد</button>
+                <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);">كشف حساب</button>
+              </div>
+            </div>
+
+            <!-- Transaction History -->
+            <div class="card">
+              <div class="card-header"><span class="card-title">📄 آخر المعاملات</span></div>
+              <div class="card-body" style="padding:0;">
+                <div style="padding:0 var(--space-lg);">
+                  <div class="transaction-row">
+                    <div>
+                      <div style="font-weight:600;font-size:0.9rem;">تجديد بطاقة الهوية</div>
+                      <div style="font-size:0.75rem;color:var(--color-text-muted);">28 أبريل 2026 | بطاقة مصرفية</div>
+                    </div>
+                    <div>
+                      <div style="font-weight:700;color:var(--color-danger);">- 5,000 ل.س</div>
+                      <span class="badge badge-success">مكتمل</span>
+                    </div>
+                  </div>
+                  <div class="transaction-row">
+                    <div>
+                      <div style="font-weight:600;font-size:0.9rem;">شهادة الميلاد</div>
+                      <div style="font-size:0.75rem;color:var(--color-text-muted);">20 أبريل 2026 | محفظة رقمية</div>
+                    </div>
+                    <div>
+                      <div style="font-weight:700;color:var(--color-danger);">- 2,000 ل.س</div>
+                      <span class="badge badge-success">مكتمل</span>
+                    </div>
+                  </div>
+                  <div class="transaction-row">
+                    <div>
+                      <div style="font-weight:600;font-size:0.9rem;">رخصة القيادة</div>
+                      <div style="font-size:0.75rem;color:var(--color-text-muted);">5 أبريل 2026 | تحويل بنكي</div>
+                    </div>
+                    <div>
+                      <div style="font-weight:700;color:var(--color-danger);">- 15,000 ل.س</div>
+                      <span class="badge badge-success">مكتمل</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security Info -->
+            <div class="card" style="margin-top:var(--space-lg);">
+              <div class="card-body" style="padding:var(--space-lg);">
+                <div style="display:flex;align-items:center;gap:var(--space-md);margin-bottom:var(--space-md);">
+                  <span style="font-size:2rem;">🔒</span>
+                  <strong>أمان مدفوعاتك</strong>
+                </div>
+                <ul style="list-style:none;font-size:0.8rem;color:var(--color-text-muted);display:flex;flex-direction:column;gap:8px;">
+                  <li>✅ تشفير TLS 1.3 لجميع البيانات</li>
+                  <li>✅ متوافق مع معيار PCI-DSS المستوى 1</li>
+                  <li>✅ بيانات البطاقة لا تُحفظ أبدًا</li>
+                  <li>✅ حماية بنظام 3D Secure</li>
+                  <li>✅ كشف الاحتيال بالذكاء الاصطناعي</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('citizen');
+
+    let currentPaymentData = { ref: '', service: '', amount: 0 };
+    let selectedMethod = 'card';
+
+    function selectPayment(ref, service, amount) {
+      currentPaymentData = { ref, service, amount };
+      goToStep(2);
+      document.getElementById('payment-summary').innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:700;">${service}</div>
+            <div style="font-size:0.8rem;color:var(--color-text-muted);">${ref}</div>
+          </div>
+          <div style="font-size:1.4rem;font-weight:800;color:var(--color-primary);">${formatCurrency(amount)}</div>
+        </div>
+      `;
+    }
+
+    function lookupApplication() {
+      const ref = document.getElementById('app-ref').value;
+      if (!ref) return;
+      // MOCK: pretend we found an application
+      selectPayment(ref, 'رسوم خدمة حكومية', 12500);
+    }
+
+    function selectMethod(el, method) {
+      document.querySelectorAll('.payment-method').forEach(m => {
+        m.classList.remove('selected');
+      });
+      el.classList.add('selected');
+      selectedMethod = method;
+      ['card','wallet','bank'].forEach(m => {
+        const chk = document.getElementById(`check-${m}`);
+        if (chk) chk.style.display = m === method ? 'block' : 'none';
+      });
+      document.getElementById('card-form').style.display = method === 'card' ? 'block' : 'none';
+    }
+
+    function processPayment() {
+      const btn = event.target;
+      btn.textContent = '⏳ جارٍ معالجة الدفع...';
+      btn.disabled = true;
+      
+      setTimeout(() => {
+        const txId = 'PAY-2026-' + Math.floor(Math.random() * 900000 + 100000);
+        document.getElementById('success-details').innerHTML = `
+          <div style="background:var(--color-background);border-radius:var(--radius-md);padding:var(--space-lg);display:grid;gap:8px;margin-bottom:var(--space-md);">
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--color-text-muted);">رقم المعاملة</span><span style="font-family:monospace;font-weight:700;">${txId}</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--color-text-muted);">المبلغ</span><span style="font-weight:700;color:var(--color-success);">${formatCurrency(currentPaymentData.amount)}</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--color-text-muted);">طريقة الدفع</span><span style="font-weight:700;">${selectedMethod === 'card' ? 'بطاقة مصرفية' : selectedMethod === 'wallet' ? 'محفظة رقمية' : 'تحويل بنكي'}</span></div>
+            <div style="display:flex;justify-content:space-between;"><span style="color:var(--color-text-muted);">التاريخ</span><span style="font-weight:700;">${new Date().toLocaleDateString('ar-SY')}</span></div>
+          </div>
+        `;
+        goToStep(3);
+      }, 2500);
+    }
+
+    function goToStep(n) {
+      document.querySelectorAll('.payment-step').forEach(s => s.classList.remove('active'));
+      document.getElementById(`step-${n}`).classList.add('active');
+    }
+
+    function formatCardNumber(input) {
+      let val = input.value.replace(/\D/g, '').substring(0, 16);
+      input.value = val.match(/.{1,4}/g)?.join(' ') || val;
+    }
+
+    function printReceipt() { showToast('جارٍ تحضير الإيصال للطباعة...'); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سجل الوصول للبيانات — رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; }
+    .log-item { border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: var(--space-md); overflow: hidden; }
+    .log-header { padding: var(--space-md) var(--space-lg); display: flex; align-items: center; gap: var(--space-md); cursor: pointer; transition: background 0.15s; }
+    .log-header:hover { background: var(--color-background); }
+    .log-body { padding: var(--space-lg); background: var(--color-background); display: none; }
+    .log-body.open { display: block; }
+    .log-icon { width: 40px; height: 40px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="app-layout">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" style="margin-right: 260px; margin-left: 0;">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;">☰</button>
+          <span class="topbar-title">سجل الوصول للبيانات</span>
+        </div>
+        <div class="topbar-right">
+          <span class="badge badge-info">🔍 مدقق</span>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <div class="page-header">
+          <h1 class="page-header-title">🔐 سجل الوصول لبياناتي</h1>
+          <p class="page-header-sub">شفافية كاملة — شاهد من وصل إلى بياناتك ومتى ولماذا</p>
+        </div>
+
+        <div class="alert alert-info" style="margin-bottom:var(--space-2xl);">
+          <span>ℹ️</span>
+          <div>
+            <strong>حقك في المعرفة</strong>
+            <div style="margin-top:4px;font-size:0.85rem;">وفقاً لقانون حماية البيانات السوري، لديك الحق الكامل في معرفة كل جهة وصلت إلى بياناتك الشخصية وسبب ذلك. هذا السجل غير قابل للتعديل.</div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid" style="margin-bottom:var(--space-2xl);">
+          <div class="stat-card primary"><div class="stat-icon primary">📊</div><div class="stat-value">4</div><div class="stat-label">إجمالي الوصول (30 يوم)</div></div>
+          <div class="stat-card success"><div class="stat-icon success">✅</div><div class="stat-value">3</div><div class="stat-label">بموافقتك</div></div>
+          <div class="stat-card gold"><div class="stat-icon gold">⚖️</div><div class="stat-value">1</div><div class="stat-label">متطلبات قانونية</div></div>
+          <div class="stat-card danger"><div class="stat-icon danger">🚫</div><div class="stat-value">0</div><div class="stat-label">وصول غير مصرح</div></div>
+        </div>
+
+        <!-- Log Items -->
+        <div id="log-container"></div>
+
+        <div style="margin-top:var(--space-2xl);padding:var(--space-xl);background:var(--color-background);border-radius:var(--radius-lg);border:1px solid var(--color-border);">
+          <h3 style="font-size:1rem;color:var(--color-primary);margin-bottom:var(--space-md);">⚙️ إدارة الموافقات</h3>
+          <p style="font-size:0.85rem;color:var(--color-text-muted);margin-bottom:var(--space-lg);">يمكنك إلغاء موافقتك على مشاركة بياناتك مع أي جهة في أي وقت.</p>
+          <div style="display:grid;gap:var(--space-md);">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-md);background:white;border-radius:var(--radius-md);border:1px solid var(--color-border);">
+              <div>
+                <div style="font-weight:700;">وزارة الصحة</div>
+                <div style="font-size:0.8rem;color:var(--color-text-muted);">بيانات التأمين الصحي</div>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="revokeConsent('وزارة الصحة')">إلغاء الموافقة</button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:var(--space-md);background:white;border-radius:var(--radius-md);border:1px solid var(--color-border);">
+              <div>
+                <div style="font-weight:700;">وزارة التعليم</div>
+                <div style="font-size:0.8rem;color:var(--color-text-muted);">بيانات التسجيل الجامعي</div>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="revokeConsent('وزارة التعليم')">إلغاء الموافقة</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script>
+    document.getElementById('sidebar-container').innerHTML = renderSidebar('citizen');
+
+    function renderLog() {
+      const container = document.getElementById('log-container');
+      container.innerHTML = MOCK_DATA_ACCESS_LOG.map((log, i) => `
+        <div class="log-item">
+          <div class="log-header" onclick="toggleLog(${i})">
+            <div class="log-icon" style="background:${log.consent ? 'var(--color-success-light)' : 'var(--color-info-light)'};">${log.consent ? '✅' : '⚖️'}</div>
+            <div style="flex:1;">
+              <div style="font-weight:700;">${log.accessor}</div>
+              <div style="font-size:0.8rem;color:var(--color-text-muted);">${log.date} | ${log.purpose}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-sm);">
+              <span class="badge ${log.consent ? 'badge-success' : 'badge-info'}">${log.legalBasis}</span>
+              <span id="log-arrow-${i}" style="color:var(--color-text-muted);">▼</span>
+            </div>
+          </div>
+          <div class="log-body" id="log-body-${i}">
+            <div style="display:grid;gap:var(--space-md);">
+              <div>
+                <div style="font-size:0.8rem;font-weight:700;color:var(--color-text-muted);margin-bottom:8px;">البيانات التي تم الوصول إليها:</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                  ${log.fields.map(f => `<span class="badge badge-primary">${f}</span>`).join('')}
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);">
+                <div style="padding:var(--space-md);background:white;border-radius:var(--radius-md);border:1px solid var(--color-border);">
+                  <div style="font-size:0.75rem;color:var(--color-text-muted);">الجهة الطالبة</div>
+                  <div style="font-weight:700;margin-top:4px;">${log.accessor}</div>
+                </div>
+                <div style="padding:var(--space-md);background:white;border-radius:var(--radius-md);border:1px solid var(--color-border);">
+                  <div style="font-size:0.75rem;color:var(--color-text-muted);">الأساس القانوني</div>
+                  <div style="font-weight:700;margin-top:4px;">${log.legalBasis}</div>
+                </div>
+              </div>
+              <div class="alert ${log.consent ? 'alert-success' : 'alert-info'}" style="font-size:0.85rem;">
+                ${log.consent 
+                  ? '✅ هذا الوصول تم بموافقتك الصريحة.' 
+                  : 'ℹ️ هذا الوصول مطلوب قانونياً ولا يتطلب موافقتك المسبقة.'}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleLog(i) {
+      const body = document.getElementById(`log-body-${i}`);
+      const arrow = document.getElementById(`log-arrow-${i}`);
+      const isOpen = body.classList.contains('open');
+      body.classList.toggle('open');
+      arrow.textContent = isOpen ? '▼' : '▲';
+    }
+
+    function revokeConsent(ministry) {
+      if (confirm(`هل أنت متأكد من إلغاء موافقتك لـ "${ministry}"؟`)) {
+        showToast(`تم إلغاء موافقتك لـ ${ministry}`, 'success');
+      }
+    }
+
+    renderLog();
+  </script>
+</body>
+</html>
