@@ -1,0 +1,305 @@
+openapi: 3.1.0
+info:
+  title: Service Request API (proposed example)
+  version: 0.1.0-draft
+  summary: |
+    Proposed example of a generic citizen-to-ministry service request API,
+    used by ministries that publish e-services through the National API
+    Gateway (e.g. ID renewal, birth certificate, business registration).
+  description: |
+    **Status:** Proposed example for the Digital Syria Vision interoperability
+    catalogue. **Not** a live Syrian government API. All identifiers are mock.
+
+    Citizens (or staff acting on their behalf via the في النافذة model)
+    submit a service request, then poll/track it until completion. Payment is
+    handled by the Government Payment Gateway via a separate API.
+
+    العربية: مثال مقترح لواجهة تقديم طلب خدمة حكومية ومتابعته. ليست واجهة
+    فعلية لأي وزارة سورية. كل المعرّفات وهمية.
+  contact:
+    name: National Digital Transformation Council (NDTC) — proposed
+  license:
+    name: Proposal — internal use
+
+servers:
+  - url: https://api.example.gov.sy/services/v1
+    description: Proposed example endpoint (not live)
+
+tags:
+  - name: requests
+    description: Submit and read service requests
+  - name: documents
+    description: Upload supporting documents
+
+security:
+  - bearerAuth: []
+
+paths:
+  /requests:
+    post:
+      tags: [requests]
+      operationId: submitServiceRequest
+      summary: Submit a new service request
+      description: |
+        Submits a new service request on behalf of the authenticated citizen.
+        The request is idempotent if `Idempotency-Key` is supplied.
+
+        العربية: تقديم طلب خدمة جديد. يدعم مفتاح idempotency لمنع التكرار.
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceRequestCreate'
+            examples:
+              mockIdRenewal:
+                summary: Mock — National ID renewal
+                value:
+                  serviceCode: ID-001
+                  citizenNin: SY-NIN-8F3A-92KQ
+                  channel: portal
+                  notes: ''
+      responses:
+        '201':
+          description: Request created
+          headers:
+            X-Correlation-Id: { $ref: '#/components/headers/CorrelationIdHeader' }
+            Location:
+              description: Resource URI of the created request.
+              schema: { type: string, format: uri }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceRequest' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409':
+          description: Duplicate request (idempotency replay with conflicting body).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /requests/{requestId}:
+    get:
+      tags: [requests]
+      operationId: getServiceRequest
+      summary: Read a service request by its ID
+      parameters:
+        - $ref: '#/components/parameters/RequestIdPath'
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Request returned
+          headers:
+            X-Correlation-Id: { $ref: '#/components/headers/CorrelationIdHeader' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceRequest' }
+              examples:
+                mock:
+                  value:
+                    requestId: APP-2026-001234
+                    serviceCode: ID-001
+                    citizenNin: SY-NIN-8F3A-92KQ
+                    status: under_review
+                    statusAr: قيد المراجعة
+                    submittedAt: '2026-04-28T10:11:00Z'
+                    updatedAt: '2026-04-30T09:00:00Z'
+                    currentStep: 2
+                    totalSteps: 4
+                    feeMinor: 500000
+                    feeCurrency: SYP
+                    paid: true
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /requests/{requestId}/documents:
+    post:
+      tags: [documents]
+      operationId: attachDocument
+      summary: Attach a supporting document to a service request
+      description: |
+        Uploads a single document. Maximum size and accepted MIME types are
+        defined per service in the National API Catalogue.
+      parameters:
+        - $ref: '#/components/parameters/RequestIdPath'
+        - $ref: '#/components/parameters/CorrelationId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [documentType, file]
+              properties:
+                documentType:
+                  type: string
+                  example: BIRTH_CERTIFICATE_SCAN
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Document attached
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Document' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '413':
+          description: File too large.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Placeholder for NDID-issued OAuth2/OIDC bearer token.
+
+  parameters:
+    RequestIdPath:
+      name: requestId
+      in: path
+      required: true
+      description: Mock service-request identifier (format `APP-YYYY-NNNNNN`).
+      schema:
+        type: string
+        pattern: '^APP-\d{4}-\d{6}$'
+        example: APP-2026-001234
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: Client-generated UUID; replayed identically to retry safely.
+      schema: { type: string, format: uuid }
+
+  headers:
+    CorrelationIdHeader:
+      description: Correlation/audit identifier echoed by the gateway.
+      schema: { type: string, format: uuid }
+
+  schemas:
+    ServiceRequestCreate:
+      type: object
+      required: [serviceCode, citizenNin, channel]
+      properties:
+        serviceCode:
+          type: string
+          description: Service catalogue code (e.g. `ID-001`, `BC-001`).
+        citizenNin:
+          type: string
+          pattern: '^SY-NIN-[A-Z0-9]{4}-[A-Z0-9]{4}$'
+        channel:
+          type: string
+          enum: [portal, mobile, in_person, agent]
+        notes:
+          type: string
+          maxLength: 500
+    ServiceRequest:
+      allOf:
+        - $ref: '#/components/schemas/ServiceRequestCreate'
+        - type: object
+          required: [requestId, status, submittedAt]
+          properties:
+            requestId:
+              type: string
+              pattern: '^APP-\d{4}-\d{6}$'
+            status:
+              type: string
+              enum: [submitted, under_review, pending_docs, approved, rejected, completed]
+            statusAr:
+              type: string
+              description: Localised Arabic status label.
+            submittedAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            currentStep:
+              type: integer
+              minimum: 0
+            totalSteps:
+              type: integer
+              minimum: 1
+            feeMinor:
+              type: integer
+              description: Fee amount in minor currency units (e.g. piastres).
+            feeCurrency:
+              type: string
+              enum: [SYP, USD]
+            paid:
+              type: boolean
+    Document:
+      type: object
+      required: [documentId, documentType, sizeBytes, uploadedAt]
+      properties:
+        documentId:
+          type: string
+          example: DOC-2026-456789
+        documentType:
+          type: string
+        sizeBytes:
+          type: integer
+        uploadedAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        messageAr: { type: string }
+        correlationId: { type: string, format: uuid }
+
+  responses:
+    BadRequest:
+      description: Malformed request body.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Authenticated but not authorised for this service.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Request not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    RateLimited:
+      description: Quota exceeded.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InternalError:
+      description: Unexpected internal error. Correlation ID logged at gateway.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

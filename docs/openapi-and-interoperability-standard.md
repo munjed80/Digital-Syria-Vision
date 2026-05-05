@@ -107,4 +107,24 @@ scope but are encouraged to follow the same style guide.
 
 ---
 
+## 8. Reference examples
+
+The repository ships **proposed reference specifications** under
+[`api-examples/`](../api-examples/) to make this standard concrete. They are
+**not live Syrian government APIs**; they are illustrative contracts that
+follow the rules above and use only mock identifiers.
+
+| File | Subject | Notes |
+|---|---|---|
+| `api-examples/citizen-profile.openapi.yaml` | NDID — citizen profile read | Uses mock NIN format `SY-NIN-XXXX-XXXX`; demonstrates `bearerAuth`, `X-Correlation-Id`, `X-Consent-Token`, `X-Legal-Basis` headers, full error model. |
+| `api-examples/service-request.openapi.yaml` | Generic service request submit / read / attach document | Demonstrates `Idempotency-Key` for state-changing endpoints, multipart upload, status enums. |
+| `api-examples/payment-status.openapi.yaml` | Government Payment Gateway — payment status read / list | Demonstrates SYP/USD currency split, settlement and failure states, audit correlation. |
+
+When new APIs are designed, contributors SHOULD start by copying the closest
+example and adapting it. Any new reference example added to `api-examples/`
+must follow the rules in this standard and remain free of any real citizen
+data.
+
+---
+
 *This document is a standard proposal. It does not represent existing Syrian law.*
