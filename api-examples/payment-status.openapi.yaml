@@ -1,0 +1,227 @@
+openapi: 3.1.0
+info:
+  title: Payment Status API (proposed example)
+  version: 0.1.0-draft
+  summary: |
+    Proposed example of the Government Payment Gateway (GPG) status query
+    API, used by ministry portals and the citizen portal to check payment
+    state for a service request.
+  description: |
+    **Status:** Proposed example for the Digital Syria Vision interoperability
+    catalogue. **Not** a live Syrian government API. All identifiers are mock.
+
+    The GPG itself is described in `docs/government-payment-gateway.md`. This
+    spec covers the read side only: status lookup by payment reference or by
+    parent service-request reference.
+
+    العربية: مثال مقترح لواجهة الاستعلام عن حالة دفع لدى بوابة الدفع
+    الحكومي. ليست واجهة فعلية. كل المعرّفات وهمية.
+  contact:
+    name: National Digital Transformation Council (NDTC) — proposed
+  license:
+    name: Proposal — internal use
+
+servers:
+  - url: https://api.example.gov.sy/gpg/v1
+    description: Proposed example endpoint (not live)
+
+tags:
+  - name: payments
+    description: Read payment status
+
+security:
+  - bearerAuth: []
+
+paths:
+  /payments/{paymentRef}:
+    get:
+      tags: [payments]
+      operationId: getPaymentStatus
+      summary: Read payment status by payment reference
+      description: |
+        Returns the current state of a payment identified by its GPG
+        reference (`PAY-YYYY-NNNNNN`). The caller must be the citizen who
+        owns the payment (self-read), the ministry that owns the parent
+        service request, or an audit role.
+
+        العربية: يُعيد الحالة الحالية لدفع وفق مرجعه. يحقّ الاستعلام للمواطن
+        صاحب الدفع، الوزارة المعنية، أو دور التدقيق.
+      parameters:
+        - $ref: '#/components/parameters/PaymentRefPath'
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Payment status returned
+          headers:
+            X-Correlation-Id: { $ref: '#/components/headers/CorrelationIdHeader' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Payment' }
+              examples:
+                mockCompleted:
+                  summary: Mock completed payment
+                  value:
+                    paymentRef: PAY-2026-789012
+                    requestRef: APP-2026-001234
+                    citizenNin: SY-NIN-8F3A-92KQ
+                    amountMinor: 500000
+                    currency: SYP
+                    method: card
+                    status: completed
+                    statusAr: مكتمل
+                    initiatedAt: '2026-04-28T10:14:11Z'
+                    settledAt: '2026-04-28T10:14:42Z'
+                    receiptId: RCP-2026-554321
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/RateLimited' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+  /payments:
+    get:
+      tags: [payments]
+      operationId: listPaymentsByRequest
+      summary: List payments attached to a service request
+      parameters:
+        - name: requestRef
+          in: query
+          required: true
+          description: Parent service-request reference (`APP-YYYY-NNNNNN`).
+          schema:
+            type: string
+            pattern: '^APP-\d{4}-\d{6}$'
+            example: APP-2026-001234
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Zero or more payments returned
+          headers:
+            X-Correlation-Id: { $ref: '#/components/headers/CorrelationIdHeader' }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/Payment' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '500': { $ref: '#/components/responses/InternalError' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Placeholder for NDID-issued OAuth2/OIDC bearer token.
+
+  parameters:
+    PaymentRefPath:
+      name: paymentRef
+      in: path
+      required: true
+      description: GPG payment reference, format `PAY-YYYY-NNNNNN`.
+      schema:
+        type: string
+        pattern: '^PAY-\d{4}-\d{6}$'
+        example: PAY-2026-789012
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      schema: { type: string, format: uuid }
+
+  headers:
+    CorrelationIdHeader:
+      description: Correlation/audit identifier echoed by the gateway.
+      schema: { type: string, format: uuid }
+
+  schemas:
+    Payment:
+      type: object
+      required: [paymentRef, requestRef, amountMinor, currency, method, status, initiatedAt]
+      properties:
+        paymentRef:
+          type: string
+          pattern: '^PAY-\d{4}-\d{6}$'
+        requestRef:
+          type: string
+          pattern: '^APP-\d{4}-\d{6}$'
+        citizenNin:
+          type: string
+          pattern: '^SY-NIN-[A-Z0-9]{4}-[A-Z0-9]{4}$'
+        amountMinor:
+          type: integer
+          description: Amount in minor currency units (e.g. piastres or cents).
+        currency:
+          type: string
+          enum: [SYP, USD]
+        method:
+          type: string
+          enum: [card, wallet, bank_transfer, cash_at_office]
+        status:
+          type: string
+          enum: [pending, processing, completed, failed, refunded, cancelled]
+        statusAr:
+          type: string
+          description: Localised Arabic status label.
+        initiatedAt:
+          type: string
+          format: date-time
+        settledAt:
+          type: string
+          format: date-time
+        receiptId:
+          type: string
+          description: GPG-issued receipt identifier (for `completed` only).
+        failureReason:
+          type: string
+          description: Populated when `status = failed`. Free text in English.
+        failureReasonAr:
+          type: string
+          description: Populated when `status = failed`. Free text in Arabic.
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+        messageAr: { type: string }
+        correlationId: { type: string, format: uuid }
+
+  responses:
+    BadRequest:
+      description: Malformed request.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Authenticated but not authorised to view this payment.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Payment reference not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    RateLimited:
+      description: Quota exceeded.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InternalError:
+      description: Unexpected internal error. Correlation ID logged at gateway.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

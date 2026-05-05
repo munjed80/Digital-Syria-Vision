@@ -1,0 +1,233 @@
+openapi: 3.1.0
+info:
+  title: Citizen Profile API (proposed example)
+  version: 0.1.0-draft
+  summary: |
+    Proposed example of the citizen profile read API exposed by the National
+    Digital Identity (NDID) shared service through the National API Gateway.
+  description: |
+    **Status:** Proposed example for the Digital Syria Vision interoperability
+    catalogue. **Not** a live Syrian government API. All identifiers below are
+    mock identifiers.
+
+    Provides a read-only view of the citizen's own profile fields held by NDID.
+    Cross-ministry access to the same data is brokered through this same
+    contract with explicit `consentToken` or legal-basis claims.
+
+    العربية: مثال مقترح لواجهة قراءة الملف الشخصي للمواطن من الهوية الرقمية
+    الوطنية NDID عبر بوابة الواجهات البرمجية الوطنية. ليست واجهة فعلية لأي
+    جهة حكومية سورية. كل المعرّفات وهمية.
+  contact:
+    name: National Digital Transformation Council (NDTC) — proposed
+    url: https://example.gov.sy/ndtc
+  license:
+    name: Proposal — internal use
+servers:
+  - url: https://api.example.gov.sy/ndid/v1
+    description: Proposed example endpoint (not live)
+
+tags:
+  - name: profile
+    description: Citizen profile read operations
+
+security:
+  - bearerAuth: []
+
+paths:
+  /citizens/{nin}/profile:
+    get:
+      tags: [profile]
+      operationId: getCitizenProfile
+      summary: Read the citizen profile by mock NIN
+      description: |
+        Returns the canonical profile fields for the citizen whose mock NIN is
+        provided in the path. The caller must be either the citizen themselves
+        (self-read via NDID-issued token) or an authorised ministry with a
+        valid `consentToken` or `legalBasis` header.
+
+        العربية: يُعيد بيانات الملف الشخصي للمواطن وفق رقم الهوية الوهمي. على
+        المستدعي أن يكون المواطن نفسه (قراءة ذاتية) أو وزارة لها موافقة
+        موثَّقة أو سند قانوني صريح.
+      parameters:
+        - $ref: '#/components/parameters/NinPath'
+        - $ref: '#/components/parameters/CorrelationId'
+        - $ref: '#/components/parameters/ConsentToken'
+        - $ref: '#/components/parameters/LegalBasis'
+      responses:
+        '200':
+          description: Profile returned
+          headers:
+            X-Correlation-Id:
+              $ref: '#/components/headers/CorrelationIdHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CitizenProfile'
+              examples:
+                mock:
+                  summary: Mock profile (illustrative)
+                  value:
+                    nin: SY-NIN-8F3A-92KQ
+                    fullNameAr: محمد أحمد العلي
+                    fullNameEn: Mohammed Al-Ali
+                    governorate: دمشق
+                    preferredLanguage: ar
+                    contact:
+                      maskedEmail: c***@example.sy
+                      maskedPhone: '+963 11 *** ****'
+                    status: active
+                    lastUpdated: '2026-04-30T08:14:22Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Placeholder for NDID-issued OAuth2/OIDC bearer token. Real production
+        scheme to be confirmed by the NDTC API Council.
+
+  parameters:
+    NinPath:
+      name: nin
+      in: path
+      required: true
+      description: |
+        Mock National Identification Number, format `SY-NIN-XXXX-XXXX`.
+        Does not embed birth year, governorate or gender (Privacy by Design).
+      schema:
+        type: string
+        pattern: '^SY-NIN-[A-Z0-9]{4}-[A-Z0-9]{4}$'
+        example: SY-NIN-8F3A-92KQ
+    CorrelationId:
+      name: X-Correlation-Id
+      in: header
+      required: false
+      description: |
+        Optional correlation/audit identifier. If not supplied, the gateway
+        generates one and returns it in the response header.
+      schema:
+        type: string
+        format: uuid
+    ConsentToken:
+      name: X-Consent-Token
+      in: header
+      required: false
+      description: |
+        Opaque token issued by NDID consent service when a ministry calls on
+        behalf of the citizen with the citizen's explicit consent.
+      schema:
+        type: string
+    LegalBasis:
+      name: X-Legal-Basis
+      in: header
+      required: false
+      description: |
+        Reference code of the legal article authorising access without
+        consent (e.g. `LB-INT-2026-014`). Logged in the audit trail.
+      schema:
+        type: string
+
+  headers:
+    CorrelationIdHeader:
+      description: Correlation/audit identifier echoed by the gateway.
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    CitizenProfile:
+      type: object
+      required: [nin, fullNameAr, status, lastUpdated]
+      properties:
+        nin:
+          type: string
+          pattern: '^SY-NIN-[A-Z0-9]{4}-[A-Z0-9]{4}$'
+        fullNameAr:
+          type: string
+          description: Full name (Arabic).
+        fullNameEn:
+          type: string
+          description: Full name (English transliteration).
+        governorate:
+          type: string
+          description: Governorate of residence.
+        preferredLanguage:
+          type: string
+          enum: [ar, en]
+        contact:
+          type: object
+          properties:
+            maskedEmail:
+              type: string
+            maskedPhone:
+              type: string
+        status:
+          type: string
+          enum: [active, suspended, deceased, unknown]
+        lastUpdated:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code.
+        message:
+          type: string
+          description: Human-readable summary (English).
+        messageAr:
+          type: string
+          description: Human-readable summary (Arabic).
+        correlationId:
+          type: string
+          format: uuid
+
+  responses:
+    BadRequest:
+      description: Malformed request or invalid NIN format.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: |
+        Authenticated but not authorised. Either no consent token, no legal
+        basis, or scope not granted.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: NIN not found in NDID.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    RateLimited:
+      description: Quota exceeded.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    InternalError:
+      description: Unexpected internal error. Correlation ID logged at gateway.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }

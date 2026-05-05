@@ -272,6 +272,15 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 1.1rem;
   width: 20px;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-item .nav-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .sidebar-footer {
