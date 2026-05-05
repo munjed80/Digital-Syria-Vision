@@ -7,9 +7,9 @@
 
 ## 📋 Project Overview
 
-**Digital Syria Vision** is a comprehensive national strategy and working prototype for Syria's digital government transformation. It covers the full spectrum: strategic documents, technical architecture, interactive citizen portal prototype, and an executive presentation.
+**Digital Syria Vision** is a comprehensive national strategy and **non-functional working prototype** for Syria's digital government transformation. It covers the full spectrum: strategic documents, technical architecture, an interactive citizen portal prototype, and an executive presentation.
 
-This is a **production-oriented** proposal project — not a demo. Every document, architecture decision, and code file follows governmental-grade standards.
+This is a **strategic proposal**, not a live system. The prototype is a static HTML/CSS/JavaScript demonstration with **mock data only**. Every page in the prototype carries a clearly visible "PROTOTYPE — MOCK DATA ONLY" banner. The repository follows governmental-grade standards in structure, but does not itself enforce production controls (TLS, PCI-DSS, etc.) — those are designed-for in production.
 
 ---
 
@@ -21,21 +21,39 @@ Digital-Syria-Vision/
 ├── CLAUDE.md                          # Project rules, architecture & quality standards
 ├── PROJECT_STATUS.md                  # What's built, what remains
 │
-├── docs/                              # Strategic Documents (12 documents)
+├── docs/                              # Strategic Documents
 │   ├── executive-summary.md           # Executive summary for leadership
 │   ├── national-strategy.md           # Complete national transformation strategy
 │   ├── 100-day-action-plan.md         # First 100 days action plan
 │   ├── governance-model.md            # DGA governance and oversight structure
-│   ├── cybersecurity-cert-framework.md # SY-CERT national cybersecurity framework
-│   ├── gov-cloud-architecture.md      # SyriaGovCloud infrastructure design
-│   ├── digital-identity-architecture.md # NDID national identity system
-│   ├── api-gateway-interoperability.md # API standards and gateway architecture
-│   ├── government-payment-gateway.md  # GPG payment infrastructure
-│   ├── procurement-vendor-policy.md   # Anti-lock-in procurement policy
-│   ├── risk-matrix.md                 # Program risk register and mitigations
-│   └── kpi-framework.md               # Performance measurement framework
+│   ├── cybersecurity-cert-framework.md
+│   ├── gov-cloud-architecture.md
+│   ├── digital-identity-architecture.md
+│   ├── api-gateway-interoperability.md
+│   ├── government-payment-gateway.md
+│   ├── procurement-vendor-policy.md
+│   ├── risk-matrix.md
+│   ├── kpi-framework.md
+│   ├── canonical-metrics-and-assumptions.md   # Single source of truth for all numbers
+│   ├── syria-context-implementation-constraints.md  # Realism appendix
+│   ├── disaster-recovery-and-backup.md
+│   ├── government-cloud-baseline-standard.md
+│   └── openapi-and-interoperability-standard.md
 │
-├── prototype/                         # Interactive Web Prototype
+├── policies/                          # Government policy proposals
+│   ├── data-classification-standard.md
+│   ├── citizen-rights-charter.md
+│   ├── accessibility-policy.md
+│   ├── vendor-lock-in-prevention-policy.md
+│   └── secure-procurement-policy.md
+│
+├── roadmap/                           # Phased rollout plans
+│   ├── first-100-days.md
+│   ├── 12-month-roadmap.md
+│   ├── 36-month-roadmap.md
+│   └── ministry-onboarding-plan.md
+│
+├── prototype/                         # Interactive Web Prototype (mock data only)
 │   ├── index.html                     # Citizen login portal
 │   ├── dashboard.html                 # Citizen dashboard
 │   ├── services.html                  # Government services list
@@ -99,6 +117,12 @@ npx serve .
 # Then visit http://localhost:3000/prototype/
 ```
 
+### Quality checks (HTML lint)
+```bash
+npm install        # one-time
+npm run lint:html  # validates prototype/ and website/ HTML
+```
+
 ---
 
 ## 🖥️ Prototype Pages
@@ -158,15 +182,26 @@ The prototype uses a custom governmental design system defined in `prototype/ass
 
 ## 📊 Program at a Glance
 
-| Dimension | Target (2030) |
+> **All figures are planning targets and scenarios over a 5-year horizon, not commitments and not measured results. The single source of truth for these numbers is [`docs/canonical-metrics-and-assumptions.md`](docs/canonical-metrics-and-assumptions.md).**
+
+| Dimension | Target / scenario (5-year horizon) |
 |-----------|--------------|
-| Citizens with NDID | 95% of adults |
-| Services online | 100% |
-| Service delivery time | -80% vs. 2026 |
-| Paper forms eliminated | 90% |
-| Annual benefits by Year 5 | $480M |
-| Total 5-year investment | $470M |
-| UN e-Gov ranking target | Top 70 globally |
+| Citizens with NDID (adult population) | 80% |
+| Government services available online (priority list) | 100% of priority list |
+| Average processing time for selected services | -60% within 24 months |
+| In-person visits for priority services | -50% within 24 months |
+| Paper forms eliminated for digitised services | 80% |
+| Estimated annual benefit by Year 5 (scenario) | ~USD 480M / year |
+| Total 5-year investment envelope (planning) | USD 470M |
+| UN E-Government Development Index ranking | Target: Top 70 globally |
+
+> Regional leadership in Arabic-speaking countries is a long-term ambition beyond the 5-year horizon, **not** a 5-year KPI.
+
+---
+
+## 🇸🇾 Syria-Context Realism
+
+This programme is designed for the actual Syrian operating environment — including electricity instability, connectivity limits, sanctions and procurement constraints, currency volatility, refugees and IDPs, legacy paper archives, and the need for assisted-digital service centres. The roadmap is sequenced **governorate by governorate**, not as a single national big-bang launch. See [`docs/syria-context-implementation-constraints.md`](docs/syria-context-implementation-constraints.md).
 
 ---
 

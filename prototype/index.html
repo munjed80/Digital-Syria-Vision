@@ -392,8 +392,9 @@
         alert('الرجاء إدخال رقم الهوية وكلمة المرور');
         return;
       }
-      // Validate the mock NIN shape (do not accept anything; reinforce that
-      // this is a prototype with a defined identifier format).
+      // Soft-validate the canonical mock NIN shape to teach the format on
+      // screen. We allow the user to override (this is a prototype with no
+      // backing identity service) but make the deviation explicit.
       if (!/^SY-NIN-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(nin) && !confirm('تنسيق الهوية غير مطابق للنموذج التجريبي SY-NIN-XXXX-XXXX. هل تريد المتابعة على أي حال؟')) {
         return;
       }

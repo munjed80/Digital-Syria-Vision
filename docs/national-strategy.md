@@ -94,9 +94,9 @@ Globally, the COVID-19 pandemic accelerated digital government adoption everywhe
 4. Deploy mobile app for iOS and Android
 5. Enact e-signature law recognizing digital signatures
 
-**Targets by 2030:**
-- 95% of adults enrolled in NDID
-- 100% of government services accessible online
+**Targets (5-year horizon — see `canonical-metrics-and-assumptions.md`):**
+- 80% of adults enrolled in NDID (target, not commitment)
+- 100% of priority service list accessible online
 - Mobile app adoption > 60% of digital service users
 
 ---

@@ -51,7 +51,7 @@ See `roadmap/12-month-roadmap.md`. End state:
 
 | Track | Year-3 outcome |
 |---|---|
-| Coverage | All accessible governorates live (subject to security and connectivity conditions). For governorates outside government control, an honest "deferred" status is published rather than a fictional rollout. |
+| Coverage | All accessible governorates live (subject to security and connectivity conditions). For governorates where security and connectivity conditions do not yet meet the minimum operational requirements, the rollout is reported honestly as "deferred", not as fictional rollout. |
 | Services | 50+ priority services live nation-wide. |
 | NDID | Cumulative enrolment scenario: 8–10 million citizens. |
 | Refugee and IDP track | Re-enrolment programme for returnees, with biometric de-duplication. |
