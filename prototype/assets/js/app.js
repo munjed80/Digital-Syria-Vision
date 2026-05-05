@@ -174,10 +174,16 @@ function animateCounter(element, target, duration = 1500) {
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <span class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
-    <span>${message}</span>
-  `;
+  // Build DOM nodes so the message is treated as plain text, not HTML
+  // (avoids any DOM-text-as-HTML reinterpretation).
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'toast-icon';
+  iconSpan.textContent = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  const msgSpan = document.createElement('span');
+  msgSpan.textContent = message;
+  toast.appendChild(iconSpan);
+  toast.appendChild(document.createTextNode(' '));
+  toast.appendChild(msgSpan);
 
   const style = `
     position: fixed; bottom: 24px; right: 24px; z-index: 9999;

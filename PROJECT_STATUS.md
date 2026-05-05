@@ -1,14 +1,52 @@
 # PROJECT_STATUS.md
 ## Digital Syria Vision — Build Status
 
-*Last Updated: 2026-05-04 | Version 1.1 (post audit-follow-up iteration)*
+*Last Updated: 2026-05-05 | Version 1.2 (post iteration 3)*
+
+---
+
+## ✅ Completed in iteration 3 (ministerial-package iteration)
+
+This iteration moves the project from "ready for ministerial briefing with caveats" toward a polished ministerial presentation package and a deeper prototype demonstration. Scope is described in `AUDIT_REPORT.md` § Iteration 3.
+
+| Area | Item | Status |
+|---|---|---|
+| Briefing | `briefing/one-page-brief.md` (Arabic 1-page exec brief) | ✅ Done |
+| Briefing | `briefing/ministerial-speaking-notes.md` (10–15 min talking points) | ✅ Done |
+| Briefing | `briefing/demo-script.md` (prototype walk-through script) | ✅ Done |
+| Briefing | `briefing/decision-memo.md` (formal Arabic decision memo) | ✅ Done |
+| Briefing | `briefing/questions-and-objections.md` (Q&A reference) | ✅ Done |
+| Prototype | `prototype/consent-management.html` (consent grant/revoke + legal-basis split) | ✅ Done |
+| Prototype | `prototype/notifications.html` (unified inbox: service / payment / status / security) | ✅ Done |
+| Prototype | `prototype/profile.html` (citizen profile + digital-rights actions) | ✅ Done |
+| Prototype | `prototype/{403,404,500}.html` (formal Arabic error pages with reference IDs) | ✅ Done |
+| Prototype | Sidebar navigation updated to surface new pages naturally | ✅ Done |
+| Prototype | Sidebar emoji nav-icons replaced with inline SVG icon set | ✅ Done |
+| Prototype | Sidebar logo emoji 🇸🇾 replaced with neutral inline SVG | ✅ Done |
+| API | `api-examples/citizen-profile.openapi.yaml` (OpenAPI 3.1, mock NIN, consent/legal-basis headers) | ✅ Done |
+| API | `api-examples/service-request.openapi.yaml` (idempotency key, multipart upload, status enum) | ✅ Done |
+| API | `api-examples/payment-status.openapi.yaml` (SYP/USD, settlement and failure states) | ✅ Done |
+| Standards | `docs/openapi-and-interoperability-standard.md` updated with §8 reference-examples table | ✅ Done |
+| Quality | `npm run lint:html` re-run after all new HTML | ✅ 0 errors |
+
+## 🟡 Iteration 3 — partial / deferred
+
+| Item | Why |
+|---|---|
+| Full emoji-icon migration across every dashboard card and topbar badge | The iteration replaced sidebar nav and sidebar logo (the most repetitive emoji surface) and kept dashboard/topbar emojis where they remain decorative inside sticky banners; a full sweep would touch every card on every page and is out of scope of a "no-redesign" pass. |
+| Inline-style refactor in dashboards | Same reasoning — extracting the remaining `style=""` blocks into utility classes is a multi-day refactor. The new pages added in this iteration (`consent-management`, `notifications`, `profile`, error pages) deliberately use far fewer inline blocks. |
+| AR↔EN runtime language toggle | Out of scope of iteration 3, as in iteration 2. |
+| External legal review of `policies/` | Not done. All policies remain explicitly labelled as proposals. |
+| External accessibility audit (WCAG 2.1 AA) | Not done. The accessibility *policy* exists (`policies/accessibility-policy.md`); a third-party audit does not. |
+| External security/penetration test | Not applicable — the prototype is static HTML with no backend, no secrets, no real data. A real test belongs to the production build, not the prototype. |
+| Live ministry-validated OpenAPI specs | Out of scope. The three examples are *reference* contracts; real APIs need real ministry input. |
 
 ---
 
 ## ✅ Completed in iteration 2 (audit follow-up)
 
 The first audit of this project (see `AUDIT_REPORT.md`) identified critical
-credibility issues. This iteration addresses the highest-priority items.
+credibility issues. Iteration 2 addressed the highest-priority items.
 
 | # | Audit item | Status |
 |---|---|---|
@@ -18,11 +56,11 @@ credibility issues. This iteration addresses the highest-priority items.
 | 4 | Inconsistent KPI / financial numbers | ✅ Single source of truth created at `docs/canonical-metrics-and-assumptions.md`; README, website, presentation, and KPI framework reconciled. |
 | 5 | Missing policies/, roadmap/, plus DR/GCBS/OpenAPI/LICENSE | ✅ Created — 5 policies, 4 roadmap docs, 3 standards docs, and `LICENSE`. |
 | 6 | Login one-click bypass | ✅ Replaced with two-step NIN + OTP simulation, mock-NIN format validation, prototype-mode disclosure note. |
-| 7 | Excessive emoji-as-icons in critical headers | 🟡 Partial — most-prominent misleading badges (PCI-DSS lock, "🔴 24/7") replaced; broader emoji audit deferred to a follow-up cosmetic pass. |
+| 7 | Excessive emoji-as-icons in critical headers | 🟡 Partial in iter. 2 — sidebar nav-icons and logo emoji now replaced in iter. 3. |
 | 8 | RTL layout cleanup | ✅ Per-page `margin-right: 260px` hacks removed from all 8 prototype pages; CSS now uses `inset-inline-start`, `margin-inline-start`, `border-inline-start`. |
 | 9 | Reduce inline styles | 🟡 Partial — shared `.prototype-banner`, `.icon`, `.proto-mode-badge`, body baseline classes added. Page-specific inline blocks remain. |
 | 10 | Syria-context realism | ✅ New `docs/syria-context-implementation-constraints.md`; new website section; covered in canonical metrics doc. |
-| 11 | Update PROJECT_STATUS, README, AUDIT_REPORT | ✅ All three updated. |
+| 11 | Update PROJECT_STATUS, README, AUDIT_REPORT | ✅ All three updated (also re-updated in iter. 3). |
 | 12 | Quality checks | ✅ Minimal `package.json` with `html-validate`; `npm run lint:html` passes (0 errors). |
 
 ---

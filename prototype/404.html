@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — الصفحة غير موجودة | رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; background: var(--color-background); margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-xl); }
+    .err { max-width: 640px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-2xl); box-shadow: var(--shadow-md); }
+    .err-code { font-family: var(--font-english); font-size: 4rem; font-weight: 800; color: var(--color-primary); letter-spacing: 2px; line-height: 1; margin-block-end: var(--space-sm); }
+    .err-title { font-size: 1.4rem; color: var(--color-text); font-weight: 700; margin-block-end: var(--space-md); }
+    .err-body { color: var(--color-text-light); font-size: 0.95rem; line-height: 1.8; margin-block-end: var(--space-lg); }
+    .err-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+    .err-meta { margin-block-start: var(--space-xl); padding-block-start: var(--space-md); border-block-start: 1px solid var(--color-border); font-size: 0.78rem; color: var(--color-text-muted); }
+  </style>
+</head>
+<body>
+  <main class="err" role="main" aria-labelledby="err-title">
+    <div class="err-code" aria-hidden="true">404</div>
+    <h1 id="err-title" class="err-title">الصفحة المطلوبة غير موجودة</h1>
+    <p class="err-body">
+      الرابط الذي حاولتَ فتحه لم يَعُد متاحاً، أو كُتب بصورة غير صحيحة، أو نُقِلت الصفحة إلى موقع آخر.
+      إن وصلتَ إلى هذه الصفحة من رابط مُرسَل إليك، يُرجى التحقق من المُرسِل قبل اتباع روابط مماثلة.
+    </p>
+    <p class="err-body">
+      <strong>الخطوات المُقترَحة:</strong>
+    </p>
+    <ul class="err-body" style="margin-inline-start:var(--space-md);">
+      <li>راجع كتابة الرابط في شريط العنوان.</li>
+      <li>استخدم القائمة الجانبية للوصول إلى الخدمة المطلوبة من نقطة بداية معروفة.</li>
+      <li>إن كنتَ تتابع طلباً برقم مرجعي، اذهب إلى صفحة <a href="tracking.html">متابعة الطلبات</a> وأَدخِل الرقم هناك.</li>
+    </ul>
+    <div class="err-actions">
+      <a class="btn btn-primary" href="dashboard.html">الذهاب إلى لوحة التحكم</a>
+      <a class="btn btn-outline" href="services.html">تصفُّح الخدمات الحكومية</a>
+    </div>
+    <div class="err-meta">
+      المرجع: <code id="ref">REF-404-—</code> &nbsp;•&nbsp; التاريخ والوقت: <span id="ts">—</span>
+    </div>
+  </main>
+  <script>
+    document.getElementById('ref').textContent = 'REF-404-' + Math.random().toString(36).slice(2,10).toUpperCase();
+    document.getElementById('ts').textContent  = new Date().toLocaleString('ar-SY');
+  </script>
+</body>
+</html>

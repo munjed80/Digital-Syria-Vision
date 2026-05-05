@@ -59,13 +59,29 @@ Digital-Syria-Vision/
 │   ├── services.html                  # Government services list
 │   ├── tracking.html                  # Application request tracking
 │   ├── payment.html                   # Payment flow mockup
+│   ├── notifications.html             # Government notifications inbox
+│   ├── profile.html                   # Citizen profile + digital rights
 │   ├── data-access-log.html           # Citizen data access log
+│   ├── consent-management.html        # Consent management for data sharing
 │   ├── ministry-dashboard.html        # Ministry operations dashboard
 │   ├── national-command.html          # National command center
 │   ├── cybersecurity-alerts.html      # SY-CERT cybersecurity dashboard
+│   ├── 403.html / 404.html / 500.html # Formal Arabic error pages
 │   └── assets/
 │       ├── css/main.css               # Government design system
-│       └── js/app.js                  # Core application logic + mock data
+│       └── js/{app,sidebar}.js        # Core logic + mock data + nav
+│
+├── briefing/                          # Ministerial briefing package (Arabic)
+│   ├── one-page-brief.md              # 1-page executive brief
+│   ├── ministerial-speaking-notes.md  # 10–15 min talking points
+│   ├── demo-script.md                 # Step-by-step prototype walk-through
+│   ├── decision-memo.md               # Formal decision memo
+│   └── questions-and-objections.md    # Q&A reference
+│
+├── api-examples/                      # Concrete OpenAPI 3.1 reference specs
+│   ├── citizen-profile.openapi.yaml   # NDID — citizen profile read
+│   ├── service-request.openapi.yaml   # Service request submit / track / docs
+│   └── payment-status.openapi.yaml    # GPG — payment status read
 │
 ├── website/                           # Public-Facing Website
 │   └── index.html                     # Vision, problem, solution, roadmap
@@ -134,13 +150,45 @@ npm run lint:html  # validates prototype/ and website/ HTML
 | Government Services | `prototype/services.html` | Browse and apply for services |
 | Request Tracking | `prototype/tracking.html` | Track application status |
 | Payment Gateway | `prototype/payment.html` | Pay government fees |
+| Notifications Inbox | `prototype/notifications.html` | Unified government notifications |
+| Citizen Profile | `prototype/profile.html` | Profile + digital rights actions |
 | Data Access Log | `prototype/data-access-log.html` | See who accessed your data |
+| Consent Management | `prototype/consent-management.html` | Grant/revoke data-sharing consents |
 | Ministry Dashboard | `prototype/ministry-dashboard.html` | Ministry operations (login: ministry) |
 | National Command | `prototype/national-command.html` | National digital command center |
 | Cybersecurity | `prototype/cybersecurity-alerts.html` | SY-CERT security operations |
+| Error pages | `prototype/{403,404,500}.html` | Formal Arabic error pages |
 | Public Website | `website/index.html` | Public-facing vision website |
 
 > **Note:** All data is mock/demonstration data. No real citizen information is used anywhere.
+
+---
+
+## 📋 Ministerial Briefing Package
+
+The `briefing/` folder contains a complete Arabic-language package for a senior-leadership meeting. Use these documents alongside `docs/canonical-metrics-and-assumptions.md` and `docs/syria-context-implementation-constraints.md`.
+
+| Document | Purpose |
+|---|---|
+| `briefing/one-page-brief.md` | Single-page Arabic executive brief — problem, risk, proposal, first 100 days, decision required, expected outcomes. |
+| `briefing/ministerial-speaking-notes.md` | Speaker notes for a 10–15 minute meeting (opening, problem, risks, solution, 100 days, decision, closing). |
+| `briefing/demo-script.md` | Step-by-step prototype walk-through with what to say and what *not* to claim on each page. |
+| `briefing/decision-memo.md` | Formal Arabic decision memo requesting approval of the 7 core decisions. |
+| `briefing/questions-and-objections.md` | Reference Q&A for objections (cost, sovereignty, sanctions, electricity, smartphones, data ownership, procurement, cyberattacks, "one-app" alternative). |
+
+> Every briefing document explicitly states this is a **proposal and prototype**, not an existing state system, and that policies require legal ratification.
+
+---
+
+## 🔌 OpenAPI Reference Examples
+
+The `api-examples/` folder contains three concrete **OpenAPI 3.1** reference specifications that demonstrate the rules in `docs/openapi-and-interoperability-standard.md`. They are **proposed examples**, not live Syrian government APIs, and use only mock identifiers.
+
+| File | Subject |
+|---|---|
+| `api-examples/citizen-profile.openapi.yaml` | NDID — citizen profile read (with consent token / legal basis headers) |
+| `api-examples/service-request.openapi.yaml` | Service request submit, read, attach document (with idempotency key) |
+| `api-examples/payment-status.openapi.yaml` | Government Payment Gateway — payment status read / list |
 
 ---
 

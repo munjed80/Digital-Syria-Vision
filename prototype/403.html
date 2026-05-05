@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>403 — الوصول مرفوض | رؤية سوريا الرقمية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <style>
+    body { font-family: 'Cairo', sans-serif; direction: rtl; background: var(--color-background); margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-xl); }
+    .err { max-width: 640px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-2xl); box-shadow: var(--shadow-md); text-align: start; }
+    .err-code { font-family: var(--font-english); font-size: 4rem; font-weight: 800; color: var(--color-primary); letter-spacing: 2px; line-height: 1; margin-block-end: var(--space-sm); }
+    .err-title { font-size: 1.4rem; color: var(--color-text); font-weight: 700; margin-block-end: var(--space-md); }
+    .err-body { color: var(--color-text-light); font-size: 0.95rem; line-height: 1.8; margin-block-end: var(--space-lg); }
+    .err-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+    .err-meta { margin-block-start: var(--space-xl); padding-block-start: var(--space-md); border-block-start: 1px solid var(--color-border); font-size: 0.78rem; color: var(--color-text-muted); }
+  </style>
+</head>
+<body>
+  <main class="err" role="main" aria-labelledby="err-title">
+    <div class="err-code" aria-hidden="true">403</div>
+    <h1 id="err-title" class="err-title">الوصول إلى هذه الصفحة غير مُصرَّح به</h1>
+    <p class="err-body">
+      حسابك مُسجَّل الدخول، لكنّه لا يملك الصلاحية اللازمة لعرض هذه الصفحة أو تنفيذ هذا الإجراء.
+      هذا قد يكون لأن الصفحة مخصَّصة لدور وظيفي محدَّد (مثلاً موظَّف وزارة)، أو لأن صلاحياتك تَغيَّرت مؤخَّراً،
+      أو لأن الجلسة لا تحوي السياق الكافي.
+    </p>
+    <p class="err-body">
+      <strong>الخطوات المُقترَحة:</strong>
+    </p>
+    <ul class="err-body" style="margin-inline-start:var(--space-md);">
+      <li>تأكَّد أنك سَجَّلت الدخول بالحساب الصحيح للخدمة المطلوبة.</li>
+      <li>إن كنت موظَّفاً حكومياً، تأكَّد أن دورك مُفعَّل ضمن نطاق الصلاحية المطلوب.</li>
+      <li>إذا اعتقدتَ أن هذا خطأ، يُرجى التواصل مع مكتب الدعم الفنّي للجهة المعنية مع تزويدهم بمُعرِّف المرجع أدناه.</li>
+    </ul>
+    <div class="err-actions">
+      <a class="btn btn-primary" href="dashboard.html">العودة إلى لوحة التحكم</a>
+      <a class="btn btn-outline" href="index.html">تسجيل الدخول بحساب آخر</a>
+    </div>
+    <div class="err-meta">
+      المرجع: <code id="ref">REF-403-—</code> &nbsp;•&nbsp; التاريخ والوقت: <span id="ts">—</span>
+    </div>
+  </main>
+  <script>
+    document.getElementById('ref').textContent = 'REF-403-' + Math.random().toString(36).slice(2,10).toUpperCase();
+    document.getElementById('ts').textContent  = new Date().toLocaleString('ar-SY');
+  </script>
+</body>
+</html>
