@@ -135,7 +135,7 @@ Assessed annually by DGA across 5 dimensions:
 ### UN e-Government Survey
 - **Frequency:** Biennial
 - **Current estimated rank:** Not yet assessed
-- **Target by 2030:** Top 70 globally, Top 10 Arab world
+- **Target by 2030:** Top 70 globally in the UN E-Government Development Index. Regional leadership among Arabic-speaking countries is treated as a **long-term ambition beyond the 5-year horizon**, not a 5-year KPI. See `docs/canonical-metrics-and-assumptions.md`.
 
 ### ITU Digital Development Index
 - **Frequency:** Annual

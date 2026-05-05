@@ -80,12 +80,14 @@ The reconstruction era is a once-in-a-generation opportunity to build modern dig
 
 **"ستكون سوريا دولة ذات سيادة رقمية حيث يمكن لكل مواطن الوصول إلى الخدمات الحكومية بشفافية وكفاءة وكرامة — من أي مكان وفي أي وقت."**
 
-### 2030 Headline Targets:
-- 🎯 **95%** of adults with Digital ID
-- 🎯 **100%** of government services online
-- 🎯 **80%** reduction in service delivery time
-- 🎯 **90%** of paper forms eliminated
-- 🎯 **#1** Arab nation in digital government (UN ranking)
+### 2030 Headline Targets (planning scenarios — see `docs/canonical-metrics-and-assumptions.md`):
+- 🎯 **80%** of adults with Digital ID — *target, 5-year horizon*
+- 🎯 **100%** of priority government services online — *target, 5-year horizon*
+- 🎯 **60%** reduction in average processing time for selected services — *24-month target*
+- 🎯 **50%** reduction in in-person visits for priority services — *24-month target*
+- 🎯 **Top 70** in UN E-Government Development Index — *5-year target*
+
+> Regional leadership in Arabic-speaking countries is a long-term ambition beyond the 5-year horizon, not a 5-year KPI.
 
 ### Visual:
 - Large vision quote in Arabic calligraphy style
@@ -319,7 +321,8 @@ The reconstruction era is a once-in-a-generation opportunity to build modern dig
   │ • GovCloud Phase 1        │ • 100 services online     │ • AI-powered services │
   │ • NDID 100K pilot         │ • Payment gateway live    │ • Open data economy   │
   │ • 20 services online      │ • GovSOC operational      │ • Regional leadership │
-  │ • SY-CERT established     │ • 5 cities covered        │ • UN Top 70 ranking   │
+  │ • SY-CERT established     │ • 5 cities covered        │ • Progress toward UN  │
+  │                           │                           │   Top 70 ranking      │
 ```
 
 **Investment:**
@@ -375,17 +378,19 @@ Ministry Digital Transformation Units (×30 ministries)
 
 ### Content:
 
-**$470M invested over 5 years generates:**
+**$470M planning envelope over 5 years (subject to Council of Ministers approval and donor co-financing). Indicative annual benefit by Year 5 (scenario):**
 
-| Benefit | Annual Value |
+| Benefit (scenario, not commitment) | Annual Value |
 |---------|-------------|
-| Cost savings from process digitization | $150M/year |
-| Reduced corruption (audit trail effect) | $200M/year |
-| Increased tax compliance (digital registry) | $80M/year |
-| Reduced government employment cost | $50M/year |
-| **Total annual benefits (Year 5)** | **$480M/year** |
+| Cost savings from process digitisation | $150M/year |
+| Reduced fraud and improved audit trail | $200M/year |
+| Improved tax compliance via digital registry | $80M/year |
+| Optimised government workforce cost | $50M/year |
+| **Estimated total annual benefit (Year 5)** | **~$480M/year (scenario)** |
 
-**ROI: 5-year cumulative benefit > $1.5B vs. $470M investment**
+**Indicative payback period: 3–4 years (scenario, not guaranteed). Cumulative 5-year benefit estimated at ~$1.5B in this scenario.**
+
+> See `docs/canonical-metrics-and-assumptions.md`. All financial figures are planning scenarios based on stated assumptions, not committed targets and not measured results.
 
 **Non-financial benefits:**
 - 🌟 Restored citizen trust in government

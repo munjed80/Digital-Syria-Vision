@@ -183,7 +183,7 @@ Ministry A ──publish──▶ [Topic: citizen.registered] ──subscribe─
   "data": {
     "applicationId": "APP-2026-123456",
     "serviceCode": "ID-RENEWAL",
-    "citizenNin": "SY-1990-0001-000123-5",
+    "citizenNin": "SY-NIN-8F3A-92KQ",
     "submittedAt": "2026-05-04T14:30:00Z"
   }
 }
@@ -199,7 +199,7 @@ The DGA maintains the authoritative citizen record. All ministries must referenc
 
 ```json
 {
-  "nin": "SY-1990-0001-000123-5",
+  "nin": "SY-NIN-8F3A-92KQ",
   "status": "ACTIVE",
   "fullNameAr": "محمد أحمد العلي",
   "fullNameEn": "Mohammed Ahmad Al-Ali",

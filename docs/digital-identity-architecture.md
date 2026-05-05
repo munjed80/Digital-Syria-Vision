@@ -43,12 +43,25 @@ The National Digital Identity (NDID) system provides every Syrian citizen with a
 
 ### 2.2 National ID Number (NIN)
 
-Format: `SY-YYYY-GGGG-NNNNNN-C`
+**Privacy by Design:** the NIN is an opaque identifier. It MUST NOT embed any
+personal attribute (year of birth, governorate, gender, religion, etc.) that
+could be inferred from the printed number on a receipt or ID card. Earlier
+draft formats that embedded the birth year and governorate code have been
+**explicitly retired** as a privacy anti-pattern.
+
+Format: `SY-NIN-XXXX-XXXX`
 - `SY` — country prefix
-- `YYYY` — birth year
-- `GGGG` — governorate code (4 digits)
-- `NNNNNN` — sequential number (6 digits)
-- `C` — check digit (Luhn algorithm)
+- `NIN` — fixed token marking the identifier as a National Identification Number
+- `XXXX-XXXX` — eight characters (alphanumeric, base32-like, excluding visually ambiguous characters such as `0`/`O` and `1`/`I`)
+
+The internal database representation MAY include a separate, non-public check
+digit and an internal monotonic counter for de-duplication; these MUST NOT be
+printed on any citizen-facing artefact. The NIN MUST be paired with NDID-issued
+credentials for any sensitive operation; the printed number alone is not a
+credential.
+
+For the prototype in this repository, the canonical mock value is
+`SY-NIN-8F3A-92KQ` (see `docs/canonical-metrics-and-assumptions.md` §4).
 
 ### 2.3 Identity Assurance Levels
 

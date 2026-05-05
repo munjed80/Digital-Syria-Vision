@@ -1,0 +1,15 @@
+{
+  "name": "digital-syria-vision",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Digital Syria Vision — strategic proposal and non-functional prototype. All prototype data is mock data only.",
+  "license": "MIT",
+  "scripts": {
+    "lint:html": "html-validate \"prototype/**/*.html\" \"website/**/*.html\"",
+    "serve": "python3 -m http.server 8080",
+    "test": "npm run lint:html"
+  },
+  "devDependencies": {
+    "html-validate": "^9.0.0"
+  }
+}

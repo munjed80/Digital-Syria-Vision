@@ -34,14 +34,20 @@
   <div class="app-layout">
     <div id="sidebar-container"></div>
 
-    <div class="main-content" style="margin-right:260px;margin-left:0;">
+    <div class="main-content">
+      <div class="prototype-banner dark" role="note" aria-label="إشعار النموذج التجريبي">
+        <svg class="prototype-banner-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 21h22L12 2zm0 4.6L19.5 19h-15L12 6.6zM11 10v5h2v-5h-2zm0 6v2h2v-2h-2z"/></svg>
+        <span class="prototype-banner-ar">نموذج أولي — بيانات تجريبية غير حقيقية (بيانات أمنية وتشغيلية محاكاة)</span>
+        <span class="prototype-banner-sep">|</span>
+        <span class="prototype-banner-en">PROTOTYPE — SIMULATED SECURITY &amp; OPS DATA</span>
+      </div>
       <header class="topbar">
         <div class="topbar-left">
           <button id="hamburger-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:#ff5252;">☰</button>
           <span class="topbar-title">🛡️ SY-CERT — مركز الاستجابة للطوارئ السيبرانية</span>
         </div>
         <div class="topbar-right">
-          <span style="background:rgba(198,40,40,0.2);border:1px solid rgba(198,40,40,0.4);color:#ff5252;padding:4px 12px;border-radius:99px;font-size:0.75rem;font-weight:700;">🔴 تشغيل 24/7</span>
+          <span style="background:rgba(198,40,40,0.2);border:1px solid rgba(198,40,40,0.4);color:#ff5252;padding:4px 12px;border-radius:99px;font-size:0.75rem;font-weight:700;" aria-label="بيانات تشغيلية محاكاة">SIMULATED — 24/7</span>
           <span id="current-time" style="font-size:0.8rem;color:rgba(255,255,255,0.4);"></span>
         </div>
       </header>
@@ -51,8 +57,8 @@
         <div style="background:linear-gradient(135deg,#1a0a0a 0%,#2d0a0a 100%);border-radius:var(--radius-xl);padding:var(--space-2xl);margin-bottom:var(--space-2xl);border:1px solid rgba(198,40,40,0.2);">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:var(--space-md);">
             <div>
-              <h1 style="color:#ff5252;font-size:1.5rem;margin-bottom:4px;">مركز العمليات الأمنية — SY-CERT</h1>
-              <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">البنية التحتية الحكومية السورية | تهديدات موثقة للأغراض التوضيحية فقط</p>
+              <h1 style="color:#ff5252;font-size:1.5rem;margin-bottom:4px;">مركز العمليات الأمنية — SY-CERT (محاكاة)</h1>
+              <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">واجهة تجريبية لتصميم مركز العمليات الأمنية المقترح. كل البيانات المعروضة محاكاة للأغراض التوضيحية فقط.</p>
             </div>
             <div style="display:flex;gap:var(--space-md);">
               <button class="btn btn-sm" style="background:rgba(198,40,40,0.2);color:#ff5252;border:1px solid rgba(198,40,40,0.4);" onclick="showToast('إشعار مرسل للوزارات')">📢 إشعار عام</button>

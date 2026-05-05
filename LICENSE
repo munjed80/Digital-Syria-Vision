@@ -1,0 +1,56 @@
+Digital Syria Vision — Project License
+=======================================
+
+Copyright (c) 2026 Digital Syria Vision contributors.
+
+This repository contains a strategic proposal, supporting documentation, and a
+non-functional prototype for a national digital transformation programme. It is
+published for planning, evaluation, and discussion purposes only.
+
+Permission is hereby granted, free of charge, to any person or government body
+obtaining a copy of this material to:
+
+  1. Read, share, and adapt the documents and prototype code for the purposes
+     of planning, evaluating, or implementing a national digital transformation
+     programme, with appropriate attribution.
+
+  2. Reproduce excerpts of the documents in policy briefs, ministerial papers,
+     academic work, and donor proposals, with attribution to "Digital Syria
+     Vision" and a link to the source repository.
+
+  3. Modify, extend, and re-distribute the prototype code under the terms of
+     the MIT License (full text below).
+
+The following are NOT permitted:
+
+  - Presenting this material as an official policy of the Syrian government,
+    the Ministry of Communications, or any other public body, unless such an
+    endorsement has been granted in writing.
+
+  - Removing the prototype/mock-data disclaimers from any redistributed copy
+    of the prototype.
+
+  - Citing the financial or KPI numbers in this repository as committed
+    targets. They are planning scenarios, not commitments.
+
+------------------------------------------------------------------------------
+
+MIT License (applies to the source code in this repository)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
